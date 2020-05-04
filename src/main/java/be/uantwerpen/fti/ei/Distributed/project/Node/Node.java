@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import sun.awt.windows.ThemeReader;
 
 import javax.annotation.PostConstruct;
 import java.math.BigInteger;
@@ -50,10 +51,18 @@ public class Node {
             if (calcIDs(localIP))
                 unicastClient.postIP(localIP, slpInput);
         }
-        //unicastClient.postIP("192.168.3.1", "localhost");
+        Thread t = new Thread(() ->{
+            unicastClient.postIP("192.168.3.2", "localhost");
+        });
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        t.run();
     }
 
-    private boolean calcIDs(String name) {
+    public boolean calcIDs(String name) {
         int nodeHash = hash(name);
         boolean state = false;
         if (previousID == nextID && (nextID == currentID || nextID == 0)) {

@@ -35,7 +35,10 @@ public class MulticastController {
             e.printStackTrace();
         }
         discovery();
-        listenMulticast();
+        Thread t = new Thread(() -> {
+            listenMulticast();
+        });
+        t.start();
     }
 
     private void discovery() {

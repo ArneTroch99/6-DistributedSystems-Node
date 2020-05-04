@@ -5,11 +5,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
-public class UnicastClient {
+public class HTTPClient {
 
     private final RestTemplate restTemplate;
 
-    public UnicastClient(RestTemplateBuilder restTemplateBuilder) {
+    public HTTPClient(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
     }
 

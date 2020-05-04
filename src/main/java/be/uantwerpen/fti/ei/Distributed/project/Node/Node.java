@@ -4,14 +4,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import sun.awt.windows.ThemeReader;
 
 import javax.annotation.PostConstruct;
 import java.math.BigInteger;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
+import java.util.Enumeration;
 
 @Component
 public class Node {
@@ -19,7 +22,7 @@ public class Node {
     private static final Logger logger = LoggerFactory.getLogger(Node.class);
     private final String multicastGroup = "228.5.6.7";
     private final int port = 6789;
-    private final UnicastClient unicastClient;
+    private final HTTPClient httpClient;
     private String localIP;
     private int currentID;
     private int nameport = 7895;
@@ -27,14 +30,26 @@ public class Node {
     private int nextID = 0;
     private int previousID = 0;
 
+
     @Autowired
-    public Node(UnicastClient unicastClient) {
-        this.unicastClient = unicastClient;
+    public Node(HTTPClient httpClient) {
+        this.httpClient = httpClient;
     }
 
     @PostConstruct
     private void initHost() {
         logger.info("Initalizing Node");
+        try {
+            Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+            for (NetworkInterface n: Collections.list(nets)) {
+                if (n.getDisplayName().equals("Eth0")) {
+                    for (InetAddress ip : Collections.list(n.getInetAddresses()))
+                    localIP = ip.toString();
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
         try {
             localIP = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
@@ -43,13 +58,14 @@ public class Node {
         logger.info("Initialized node with local ip " + localIP + " and hash " + (currentID = hash(localIP)));
     }
 
+
     void processMulti(String input) {
         logger.info("Processing multicast input: " + input);
         input = input.trim();
         String slpInput = input.substring(input.indexOf("@") + 1);
         if (!slpInput.equals(localIP)) {
             if (calcIDs(localIP))
-                unicastClient.postIP(localIP, slpInput);
+                HTTPClient.postIP(localIP, slpInput);
         }
     }
 

@@ -1,57 +1,72 @@
-package Node;
+package be.uantwerpen.fti.ei.Distributed.project.Node;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
+import java.net.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+@Component
 public class Node {
 
-    private String multicastGroup;
-    private int socket;
+    private static final Logger logger = LoggerFactory.getLogger(Node.class);
+    private final String multicastGroup = "228.5.6.7";
+    private final int port = 6789;
     private String localIP;
-    private String localName;
     private String ipName;
+    private int currentID;
     private int nameport = 7895;
     private int uniport = 7890;
-
-    private int currentID;
     private int nextID = 0;
     private int previousID = 0;
 
-    Node(String multicastGroup, int socket) {
-        this.multicastGroup = multicastGroup;
-        this.socket = socket;
-        this.setHost();
-        this.currentID = hash(localName);
+    @PostConstruct
+    private void initHost() {
+        logger.info("Initalizing Node");
+        try {
+            localIP = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        logger.info("Initialized node with local ip " + localIP + " and hash " + (currentID = hash(localIP)));
     }
 
-    private void setHost() {
-        try {
-            InetAddress host = InetAddress.getLocalHost();
-            localIP = host.getHostAddress();
-            localName = host.getHostName();
-
-            System.out.println("Node information:");
-            System.out.println("Local IP: " + localIP + "\nName: " + localName + "\nHash: " + hash(localName));
-        } catch (IOException ex) {
-            ex.printStackTrace();
+    void processMulti(String input){
+        logger.info("Processing multicast input: " + input);
+        input = input.trim();
+        String slpInput = input.substring(input.indexOf("@") + 1);
+        if (!slpInput.equals(localIP)) {
+            if (calcIDs(localIP))
+                //sendUni("#" + this.localName, ip, uniport);
+            System.out.println("after multi: nextID " + nextID + " previousID " + previousID);
         }
     }
 
-    private String getHost() {
-        return localIP + "%" + localName;
+    private boolean calcIDs(String name) {
+        int nodeHash = hash(name);
+        boolean state = false;
+
+        if (previousID == nextID && (nextID == currentID || nextID == 0)) {
+            nextID = nodeHash;
+            previousID = nodeHash;
+            state = true;
+        } else if ((currentID < nodeHash && nodeHash < nextID)) {
+            nextID = nodeHash;
+            state = true;
+        } else if ((currentID > nodeHash && nodeHash > previousID)) {
+            previousID = nodeHash;
+            state = true;
+        }
+        return state;
     }
 
-    void bootstrap() {
-        sendMulti(getHost());
-    }
-
-    void processUni(String msg) {
+   /* void processUni(String msg) {
         char firstChar = msg.charAt(0);
 
         switch (firstChar) {
@@ -73,8 +88,8 @@ public class Node {
             case '~':
                 msg = msg.substring(1).trim();
                 String[] data2 = msg.split("%");
-                System.out.println("1 "+ data2[0] + " 2 " + data2[1]);
-                sendUni("&" + nextID , data2[0].trim(), uniport);
+                System.out.println("1 " + data2[0] + " 2 " + data2[1]);
+                sendUni("&" + nextID, data2[0].trim(), uniport);
                 sendUni("@" + previousID, data2[1].trim(), uniport);
                 System.out.println("sent ips");
                 break;
@@ -88,33 +103,15 @@ public class Node {
                 break;
         }
         System.out.println("after uni: nextID " + nextID + " previousID " + previousID);
-    }
+    }*/
 
-    public void process(String ip, String name) {
+    /*public void process(String ip, String name) {
         if (!ip.equals(localIP)) {
             if (calcIDs(name.trim()))
                 sendUni("#" + this.localName, ip, uniport);
 
             System.out.println("after multi: nextID " + nextID + " previousID " + previousID);
         }
-    }
-
-    private boolean calcIDs(String name) {
-        int nodeHash = hash(name);
-        boolean state = false;
-
-        if (previousID == nextID && (nextID == currentID || nextID == 0)) {
-            nextID = nodeHash;
-            previousID = nodeHash;
-            state = true;
-        } else if ((currentID < nodeHash && nodeHash < nextID)) {
-            nextID = nodeHash;
-            state = true;
-        } else if ((currentID > nodeHash && nodeHash > previousID)) {
-            previousID = nodeHash;
-            state = true;
-        }
-        return state;
     }
 
     public void shut() {
@@ -159,7 +156,7 @@ public class Node {
             e.printStackTrace();
             return false;
         }
-    }
+    }*/
 
     private int hash(String input) {
         try {
@@ -172,5 +169,17 @@ public class Node {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String getMulticastGroup() {
+        return multicastGroup;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public String getLocalIP() {
+        return localIP;
     }
 }

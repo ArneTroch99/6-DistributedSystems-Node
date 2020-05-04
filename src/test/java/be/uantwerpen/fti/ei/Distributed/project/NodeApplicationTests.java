@@ -1,4 +1,4 @@
-package ua.distributed.node;
+package be.uantwerpen.fti.ei.Distributed.project;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package Node;
+package be.uantwerpen.fti.ei.Distributed.project.Node;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -28,7 +28,7 @@ public class UnicastListener implements Runnable {
 
                 String input = new String(recv.getData());
                 System.out.println("Unicast: " + input);
-                currentNode.processUni(input);
+                //currentNode.processUni(input);
             }
             s.close();
         } catch (IOException e) {

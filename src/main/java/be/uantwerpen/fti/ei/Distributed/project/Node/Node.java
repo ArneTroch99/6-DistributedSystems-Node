@@ -2,13 +2,13 @@ package be.uantwerpen.fti.ei.Distributed.project.Node;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.math.BigInteger;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -18,13 +18,18 @@ public class Node {
     private static final Logger logger = LoggerFactory.getLogger(Node.class);
     private final String multicastGroup = "228.5.6.7";
     private final int port = 6789;
+    private final UnicastClient unicastClient;
     private String localIP;
-    private String ipName;
     private int currentID;
     private int nameport = 7895;
     private int uniport = 7890;
     private int nextID = 0;
     private int previousID = 0;
+
+    @Autowired
+    public Node(UnicastClient unicastClient) {
+        this.unicastClient = unicastClient;
+    }
 
     @PostConstruct
     private void initHost() {
@@ -37,21 +42,20 @@ public class Node {
         logger.info("Initialized node with local ip " + localIP + " and hash " + (currentID = hash(localIP)));
     }
 
-    void processMulti(String input){
+    void processMulti(String input) {
         logger.info("Processing multicast input: " + input);
         input = input.trim();
         String slpInput = input.substring(input.indexOf("@") + 1);
         if (!slpInput.equals(localIP)) {
             if (calcIDs(localIP))
-                //sendUni("#" + this.localName, ip, uniport);
-            System.out.println("after multi: nextID " + nextID + " previousID " + previousID);
+                unicastClient.postIP(localIP, slpInput);
         }
+        //unicastClient.postIP("192.168.3.1", "localhost");
     }
 
     private boolean calcIDs(String name) {
         int nodeHash = hash(name);
         boolean state = false;
-
         if (previousID == nextID && (nextID == currentID || nextID == 0)) {
             nextID = nodeHash;
             previousID = nodeHash;
@@ -62,6 +66,9 @@ public class Node {
         } else if ((currentID > nodeHash && nodeHash > previousID)) {
             previousID = nodeHash;
             state = true;
+        }
+        if (state) {
+            logger.info("Changed ID's: nextID = " + nextID + ", previousID = " + previousID);
         }
         return state;
     }
@@ -133,7 +140,6 @@ public class Node {
             e.printStackTrace();
             return false;
         }
-
     }
 
     private boolean sendMulti(String msg) {
@@ -171,15 +177,15 @@ public class Node {
         }
     }
 
-    public String getMulticastGroup() {
+    String getMulticastGroup() {
         return multicastGroup;
     }
 
-    public int getPort() {
+    int getPort() {
         return port;
     }
 
-    public String getLocalIP() {
+    String getLocalIP() {
         return localIP;
     }
 }

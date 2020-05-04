@@ -22,14 +22,13 @@ public class Node {
     private static final Logger logger = LoggerFactory.getLogger(Node.class);
     private final String multicastGroup = "228.5.6.7";
     private final int port = 6789;
-    private final HTTPClient httpClient;
     private String localIP;
     private int currentID;
     private int nameport = 7895;
     private int uniport = 7890;
     private int nextID = 0;
     private int previousID = 0;
-
+    private final HTTPClient httpClient;
 
     @Autowired
     public Node(HTTPClient httpClient) {
@@ -65,11 +64,11 @@ public class Node {
         String slpInput = input.substring(input.indexOf("@") + 1);
         if (!slpInput.equals(localIP)) {
             if (calcIDs(localIP))
-                HTTPClient.postIP(localIP, slpInput);
+                httpClient.postIP(localIP, slpInput);
         }
     }
 
-    public boolean calcIDs(String name) {
+    boolean calcIDs(String name) {
         int nodeHash = hash(name);
         boolean state = false;
         if (previousID == nextID && (nextID == currentID || nextID == 0)) {

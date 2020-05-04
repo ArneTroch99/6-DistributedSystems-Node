@@ -28,4 +28,9 @@ private static final Logger logger = LoggerFactory.getLogger(UnicastController.c
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/bootstrap")
+    public void receiveBootstrap(@RequestParam(name = "namingip") String namingServerIP){
+        System.out.println(namingServerIP);
+    }
+
 }

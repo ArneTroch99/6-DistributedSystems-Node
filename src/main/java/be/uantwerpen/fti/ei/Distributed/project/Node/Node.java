@@ -51,15 +51,6 @@ public class Node {
             if (calcIDs(localIP))
                 unicastClient.postIP(localIP, slpInput);
         }
-        Thread t = new Thread(() ->{
-            unicastClient.postIP("192.168.3.2", "localhost");
-        });
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        t.run();
     }
 
     public boolean calcIDs(String name) {

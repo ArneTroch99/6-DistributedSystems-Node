@@ -66,7 +66,7 @@ public class Node {
         String slpInput = input.substring(input.indexOf("@") + 1);
         if (!slpInput.equals(localIP)) {
             logger.info("Processing multicast input: " + input);
-            if (calcIDs(localIP))
+            if (calcIDs(slpInput))
                 httpClient.putIP(localIP, slpInput);
         }
     }

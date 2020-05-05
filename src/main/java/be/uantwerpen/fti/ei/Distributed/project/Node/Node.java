@@ -84,10 +84,10 @@ public class Node {
         } else if ((currentID > nodeHash && nodeHash > previousID)) {
             previousID = nodeHash;
             state = true;
-        } else if ((previousID > currentID) && (nodeHash > previousID || currentID < nodeHash)){
+        } else if ((previousID > currentID && (nodeHash > previousID || nodeHash < currentID))){
             previousID = nodeHash;
             state = true;
-        } else if ((nextID < currentID) && (nodeHash < nextID || nodeHash > currentID)){
+        } else if ((nextID < currentID && (nodeHash < nextID || nodeHash > currentID))){
             nextID = nodeHash;
             state = true;
         }

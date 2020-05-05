@@ -86,8 +86,10 @@ public class Node {
             state = true;
         } else if ((previousID > currentID) && (nodeHash > previousID)){
             previousID = nodeHash;
+            state = true;
         } else if ((nextID < currentID) && (nodeHash < nextID)){
             nextID = nodeHash;
+            state = true;
         }
         if (state) {
             logger.info("Changed ID's: nextID = " + nextID + ", previousID = " + previousID);

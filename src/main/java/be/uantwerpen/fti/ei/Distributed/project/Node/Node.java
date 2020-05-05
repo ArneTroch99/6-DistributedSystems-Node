@@ -93,7 +93,7 @@ public class Node {
 
     void shutdown() {
         logger.info("Received shutdown command");
-        String ips = httpClient.leave(localIP, namingServerIp, Integer.toString(nextID), Integer.toString(previousID));
+        String ips = httpClient.leave(Integer.toString(currentID), namingServerIp, Integer.toString(nextID), Integer.toString(previousID));
         ObjectMapper objectMapper = new ObjectMapper();
         TypeFactory typeFactory = objectMapper.getTypeFactory();
         try {

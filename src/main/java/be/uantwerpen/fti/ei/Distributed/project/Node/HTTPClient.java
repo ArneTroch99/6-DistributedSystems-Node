@@ -27,6 +27,4 @@ public class HTTPClient {
         String url = "http://" + goalIP + ":8081/updateNeighbors?id=" + what + "&newID=" + newID;
         restTemplate.put(url, String.class);
     }
-
-
 }

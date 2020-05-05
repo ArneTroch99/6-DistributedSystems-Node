@@ -14,7 +14,7 @@ public class HTTPClient {
     }
 
     void putIP(String localIP, String goalIP) {
-        String url = "http://" + goalIP + ":8081/postip?ip=" + localIP;
+        String url = "http://" + goalIP + ":8081/postIP?ip=" + localIP;
         restTemplate.put(url, String.class);
     }
 

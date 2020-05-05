@@ -20,13 +20,12 @@ public class HTTPClient {
 
     String leave(String nodeID, String goalIP, String upper, String lower) {
         String url = "http://" + goalIP + ":8081/leave?id=" + nodeID + "&lower=" + lower + "&upper=" + upper;
-        String temp = restTemplate.getForObject(url, String.class);
-        System.out.println(temp);
-        return temp;
+        return restTemplate.getForObject(url, String.class);
     }
 
     void updateNeighbor(String goalIP, String newID, String what) {
         String url = "http://" + goalIP + ":8081/updateNeighbors?what=" + what + "&id=" + newID;
+        System.out.println("goalIP");
         restTemplate.put(url, String.class);
     }
 }

@@ -26,7 +26,7 @@ public class HTTPClient {
     }
 
     void updateNeighbor(String goalIP, String newID, String what) {
-        String url = "http://" + goalIP + ":8081/updateNeighbors?id=" + what + "&newID=" + newID;
+        String url = "http://" + goalIP + ":8081/updateNeighbors?what=" + what + "&newID=" + newID;
         restTemplate.put(url, String.class);
     }
 }

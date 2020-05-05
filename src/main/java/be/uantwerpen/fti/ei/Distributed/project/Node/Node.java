@@ -11,13 +11,9 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.math.BigInteger;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 
 @Component
@@ -41,17 +37,6 @@ public class Node {
     @PostConstruct
     private void initNode() {
         logger.info("Initalizing Node");
-        try {
-            Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
-            for (NetworkInterface n : Collections.list(nets)) {
-                if (n.getDisplayName().equals("Eth0")) {
-                    for (InetAddress ip : Collections.list(n.getInetAddresses()))
-                        localIP = ip.toString();
-                }
-            }
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
         try {
             localIP = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
@@ -84,10 +69,10 @@ public class Node {
         } else if ((currentID > nodeHash && nodeHash > previousID)) {
             previousID = nodeHash;
             state = true;
-        } else if ((previousID > currentID && (nodeHash > previousID || nodeHash < currentID))){
+        } else if ((previousID > currentID && (nodeHash > previousID || nodeHash < currentID))) {
             previousID = nodeHash;
             state = true;
-        } else if ((nextID < currentID && (nodeHash < nextID || nodeHash > currentID))){
+        } else if ((nextID < currentID && (nodeHash < nextID || nodeHash > currentID))) {
             nextID = nodeHash;
             state = true;
         }

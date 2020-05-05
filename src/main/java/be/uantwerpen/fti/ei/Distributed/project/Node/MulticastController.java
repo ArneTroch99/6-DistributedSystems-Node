@@ -31,6 +31,7 @@ public class MulticastController {
             multicastGroup = InetAddress.getByName(node.getMulticastGroup());
             multicastSocket = new MulticastSocket(node.getPort());
             multicastSocket.joinGroup(multicastGroup);
+            multicastSocket.setLoopbackMode(false);
         } catch (Exception e) {
             e.printStackTrace();
         }

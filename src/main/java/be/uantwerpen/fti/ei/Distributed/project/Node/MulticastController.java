@@ -3,7 +3,6 @@ package be.uantwerpen.fti.ei.Distributed.project.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -37,11 +36,11 @@ public class MulticastController {
         }
         Thread t = new Thread(this::listenMulticast);
         t.start();
-        t = new Thread(this::discovery);
+        t = new Thread(this::bootstrap);
         t.start();
     }
 
-    private void discovery() {
+    private void bootstrap() {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -49,7 +48,7 @@ public class MulticastController {
         }
         try {
             String msg = "@" + node.getLocalIP();
-            logger.info("Sending discovery message: " + msg);
+            logger.info("Sending bootstrap message: " + msg);
             DatagramPacket packet = new DatagramPacket(msg.getBytes(), msg.length(), multicastGroup, node.getPort());
             multicastSocket.send(packet);
         } catch (IOException e) {
@@ -64,9 +63,7 @@ public class MulticastController {
             try {
                 byte[] buffer = new byte[1000];
                 DatagramPacket recv = new DatagramPacket(buffer, buffer.length);
-
                 multicastSocket.receive(recv);
-
                 String input = new String(recv.getData());
                 node.processMulti(input);
             } catch (IOException e) {

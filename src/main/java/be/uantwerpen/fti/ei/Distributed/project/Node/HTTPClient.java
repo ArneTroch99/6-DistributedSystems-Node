@@ -13,9 +13,20 @@ public class HTTPClient {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    void postIP(String localIP, String goalIP) {
-        System.out.println("sending");
-        String url = "http://" + goalIP + ":8081/postIP?ip=" + localIP;
+    void putIP(String localIP, String goalIP) {
+        String url = "http://" + goalIP + ":8081/postip?ip=" + localIP;
         restTemplate.put(url, String.class);
     }
+
+    String leave(String nodeID, String goalIP, String upper, String lower) {
+        String url = "http://" + goalIP + ":8081/leave?id=" + nodeID + "&lower=" + lower + "&upper=" + upper;
+        return restTemplate.getForObject(url, String.class);
+    }
+
+    void updateNeighbor(String goalIP, String newID, String what) {
+        String url = "http://" + goalIP + ":8081/updateNeighbors?id=" + what + "&newID=" + newID;
+        restTemplate.put(url, String.class);
+    }
+
+
 }

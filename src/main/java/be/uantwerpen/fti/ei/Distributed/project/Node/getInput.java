@@ -22,15 +22,18 @@ public class getInput {
 
     @PostConstruct
     private void input() {
-        logger.info("Listening for shutdown command");
-        boolean running = true;
-        while (running) {
-            Scanner sc = new Scanner(System.in);
-            String input = sc.nextLine();
-            if (input.trim().equals("shutdown")) {
-                node.shutdown();
-                running = false;
+        Thread t = new Thread(() -> {
+            logger.info("Listening for shutdown command");
+            boolean running = true;
+            while (running) {
+                Scanner sc = new Scanner(System.in);
+                String input = sc.nextLine();
+                if (input.trim().equals("shutdown")) {
+                    node.shutdown();
+                    running = false;
+                }
             }
-        }
+        });
+        t.start();
     }
 }

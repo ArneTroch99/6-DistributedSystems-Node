@@ -71,7 +71,7 @@ public class Node {
         }
     }
 
-    boolean calcIDs(String name) {
+    synchronized boolean calcIDs(String name) {
         int nodeHash = hash(name);
         boolean state = false;
         if (previousID == nextID && (nextID == currentID || nextID == 0)) {

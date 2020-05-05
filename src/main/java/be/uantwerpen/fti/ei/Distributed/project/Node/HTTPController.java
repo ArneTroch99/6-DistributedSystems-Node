@@ -36,7 +36,7 @@ public class HTTPController {
     @RequestMapping(value = "/bootstrap", method = RequestMethod.PUT)
     public ResponseEntity receiveBootstrap(@RequestParam(name = "namingip") String namingServerIP,
                                            @RequestParam(name = "nodes") int amount) {
-        logger.info("Received ip address of the Naming Server " + namingServerIP);
+        logger.info("Received ip address of the Naming Server " + namingServerIP + " and amount of nodes: " + amount);
         try {
             node.setNamingServerIp(namingServerIP);
             if (amount < 1) {

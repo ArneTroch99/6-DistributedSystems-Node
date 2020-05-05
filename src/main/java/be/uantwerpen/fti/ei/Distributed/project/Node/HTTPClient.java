@@ -20,7 +20,9 @@ public class HTTPClient {
 
     String leave(String nodeID, String goalIP, String upper, String lower) {
         String url = "http://" + goalIP + ":8081/leave?id=" + nodeID + "&lower=" + lower + "&upper=" + upper;
-        return restTemplate.getForObject(url, String.class);
+        String temp = restTemplate.getForObject(url, String.class);
+        System.out.println(temp);
+        return temp;
     }
 
     void updateNeighbor(String goalIP, String newID, String what) {

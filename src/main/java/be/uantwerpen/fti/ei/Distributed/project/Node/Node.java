@@ -133,6 +133,10 @@ public class Node {
         this.namingServerIp = namingServerIp;
     }
 
+    public String getNamingServerIp() {
+        return namingServerIp;
+    }
+
     void setNextID(int nextID) {
         this.nextID = nextID;
     }

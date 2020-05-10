@@ -5,20 +5,46 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.IOException;
 
 @RestController
 public class HTTPController {
 
     private static final Logger logger = LoggerFactory.getLogger(HTTPController.class);
+    private final ReplicationService replicationService;
     private final Node node;
+    private String localPath;
+    private String replicatedPath;
+    private File localFolder;
 
     @Autowired
-    public HTTPController(Node node) {
+    public HTTPController(Node node, ReplicationService replicationService) {
         this.node = node;
+        this.replicationService = replicationService;
+    }
+
+    @PostConstruct
+    public void setup() {
+        try {
+            new File("/Replication").createNewFile();
+            File replication = new File("Replication/replicatedData");
+            localFolder = new File("Replication/localData");
+            replication.createNewFile();
+            localFolder.createNewFile();
+            localPath = localFolder.getPath();
+            replicatedPath = replication.getPath();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @RequestMapping(value = "/postIP", method = RequestMethod.PUT)
@@ -64,6 +90,31 @@ public class HTTPController {
             }
         } catch (Exception e) {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/addReplicatedFile", method = RequestMethod.POST)
+    public ResponseEntity addReplicated(@RequestParam("file") MultipartFile file) throws IOException {
+        replicationService.saveFile(file, replicatedPath);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/addLocalFile", method = RequestMethod.POST)
+    public ResponseEntity addLocal(@RequestParam("file") MultipartFile file) throws IOException {
+        replicationService.saveFile(file, localPath);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/deleteReplicatedFile", method = RequestMethod.PUT)
+    public ResponseEntity deleteReplicated(@RequestParam("fileName") String name) throws IOException {
+        replicationService.deleteFile(name, replicatedPath);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @Scheduled(fixedRate = 500)
+    public void checkLocalData() {
+        if(node.getNamingServerIp() != null) {
+            replicationService.checkForNewFiles(localFolder, node.getNamingServerIp());
         }
     }
 

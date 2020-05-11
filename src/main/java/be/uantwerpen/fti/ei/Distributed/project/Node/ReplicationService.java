@@ -43,6 +43,7 @@ public class ReplicationService {
     }
 
     void deleteFile(String name, String pathname) {
+        node.getFileMapping().remove(name);
         new File(pathname, name).delete();
     }
 
@@ -94,15 +95,24 @@ public class ReplicationService {
         restTemplate.put(nodeURL, String.class);
     }
 
+    void updateAll(final File folder, String nameServerIP){
+        for (final File fileEntry : folder.listFiles()) {
+            replicateFile(fileEntry, nameServerIP);
+        }
+    }
 
     private void replicateFile(final File file, String nameServerIP) {
 
         final String namingServerURL = "http://" + nameServerIP + ":8081/fileLocation?filename=" + file.getName();
         ResponseEntity<String> nodeIP = restTemplate.getForEntity(namingServerURL, String.class);
 
-        if (!nodeIP.getBody().equals(node.getLocalIP())){
+        sendFile(file, nodeIP.getBody());
+    }
 
-            final String nodeURL = "http://" + nodeIP.getBody() + ":8081/addReplicatedFile";
+     void sendFile(File file, String nodeIP){
+        if (!nodeIP.equals(node.getLocalIP())){
+
+            String nodeURL = "http://" + nodeIP + ":8081/addReplicatedFile";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -123,6 +133,10 @@ public class ReplicationService {
             HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
             ResponseEntity<String> response = restTemplate.exchange(nodeURL, HttpMethod.POST, requestEntity, String.class);
+
+            nodeURL = "http://" + nodeIP + ":8081/addReplicatedMapping?fileName" + file.getName() + "list" + node.getFileMapping().get(file.getName()); // This is never gonna work, fix this shit
+            restTemplate.put(nodeURL, String.class);
+
             if (!(response.getStatusCodeValue() == 200)) {
                 System.out.println("Wrong");
             }

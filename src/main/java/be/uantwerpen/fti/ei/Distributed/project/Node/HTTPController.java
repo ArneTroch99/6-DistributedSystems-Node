@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 public class HTTPController {
@@ -36,12 +37,12 @@ public class HTTPController {
     public void setup() {
         logger.info("Controller setup");
         new File("Replication").mkdir();
-        File replication = new File("Replication/replicatedData");
+        node.setReplicatedFolder(new File("Replication/replicatedData"));
         localFolder = new File("Replication/localData");
-        replication.mkdir();
+        node.getReplicatedFolder().mkdir();
         localFolder.mkdir();
         localPath = localFolder.getPath();
-        replicatedPath = replication.getPath();
+        replicatedPath = node.getReplicatedFolder().getPath();
         logger.info("Completed controller setup!");
     }
 
@@ -91,6 +92,17 @@ public class HTTPController {
         }
     }
 
+    @RequestMapping(value = "/addReplicatedMapping", method = RequestMethod.PUT)
+    public ResponseEntity addReplicatedMapping(@RequestParam("fileName") String filename,
+                                               @RequestParam("list") List<String> list) {
+        logger.info("Received replicated mapping for file " + filename);
+        if(!list.contains(node.getLocalIP())){
+            list.add(node.getLocalIP());
+        }
+        node.addMapping(filename, list);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/addReplicatedFile", method = RequestMethod.POST)
     public ResponseEntity addReplicated(@RequestParam("file") MultipartFile file) throws IOException {
         logger.info("Received replicated file");
@@ -111,6 +123,14 @@ public class HTTPController {
         replicationService.deleteFile(name, replicatedPath);
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/shutdown", method = RequestMethod.PUT)
+    public ResponseEntity shutdown() {
+        logger.info("Received request to shutdown node");
+        node.shutdown();
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 
     @Scheduled(fixedRate = 500)
     public void checkLocalData() {

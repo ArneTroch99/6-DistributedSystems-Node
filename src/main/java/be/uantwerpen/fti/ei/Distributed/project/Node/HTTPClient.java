@@ -18,6 +18,11 @@ public class HTTPClient {
         restTemplate.put(url, String.class);
     }
 
+    String getIP(int ID, String goalIP){
+        String url = "http://" + goalIP + ":8081/nodeip?id=" + ID;
+        return (restTemplate.getForEntity(url, String.class)).getBody();
+    }
+
     String leave(String nodeID, String goalIP, String upper, String lower) {
         String url = "http://" + goalIP + ":8081/leave?id=" + nodeID + "&lower=" + lower + "&upper=" + upper;
         return restTemplate.getForObject(url, String.class);
@@ -25,7 +30,6 @@ public class HTTPClient {
 
     void updateNeighbor(String goalIP, String newID, String what) {
         String url = "http://" + goalIP + ":8081/updateNeighbors?what=" + what + "&id=" + newID;
-        System.out.println("goalIP");
         restTemplate.put(url, String.class);
     }
 }

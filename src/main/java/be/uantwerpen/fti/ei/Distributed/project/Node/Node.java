@@ -6,20 +6,27 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class Node {
 
+    // TODO: 11/05/2020 Hele hoop shit aanpassen voor de filemapping: zelf verwijderen enzo, gaat nooit werken in de huidige staat
+
     private static final Logger logger = LoggerFactory.getLogger(Node.class);
+    private final ReplicationService replicationService;
     private final String multicastGroup = "228.5.6.7";
     private final int port = 6789;
     private final HTTPClient httpClient;
@@ -28,10 +35,13 @@ public class Node {
     private int currentID;
     private int nextID = 0;
     private int previousID = 0;
+    private File replicatedFolder;
+    private Map<String, List<String>> fileMapping = new HashMap<>();
 
     @Autowired
-    public Node(HTTPClient httpClient) {
+    public Node(HTTPClient httpClient, ReplicationService replicationService) {
         this.httpClient = httpClient;
+        this.replicationService = replicationService;
     }
 
     @PostConstruct
@@ -51,8 +61,8 @@ public class Node {
         String slpInput = input.substring(input.indexOf("@") + 1);
         if (!slpInput.equals(localIP)) {
             logger.info("Processing multicast input: " + input);
-            if (calcIDs(slpInput))
-                httpClient.putIP(localIP, slpInput);
+            if (calcIDs(slpInput)) replicationService.updateAll(replicatedFolder, getNamingServerIp());
+            httpClient.putIP(localIP, slpInput);
         }
     }
 
@@ -93,6 +103,10 @@ public class Node {
             httpClient.updateNeighbor(someClassList.get(0), Integer.toString(nextID), "upper");
             httpClient.updateNeighbor(someClassList.get(1), Integer.toString(previousID), "lower");
             logger.info("Updated neighbors");
+            String previousIP = httpClient.getIP(previousID, namingServerIp);
+            for (final File fileEntry : replicatedFolder.listFiles()) {
+                replicationService.sendFile(fileEntry, previousIP);
+            }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -143,5 +157,21 @@ public class Node {
 
     void setPreviousID(int previousID) {
         this.previousID = previousID;
+    }
+
+    public File getReplicatedFolder() {
+        return replicatedFolder;
+    }
+
+    public void setReplicatedFolder(File replicatedFolder) {
+        this.replicatedFolder = replicatedFolder;
+    }
+
+    public void addMapping(String filename, List<String> list){
+        fileMapping.put(filename, list);
+    }
+
+    public Map<String, List<String>> getFileMapping() {
+        return fileMapping;
     }
 }

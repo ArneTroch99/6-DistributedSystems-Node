@@ -1,5 +1,11 @@
 package be.uantwerpen.fti.ei.Distributed.project.Node;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +18,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.apache.http.entity.mime.MultipartEntity;
 
 import java.io.File;
 import java.io.IOException;
@@ -97,8 +104,9 @@ public class ReplicationService {
         ResponseEntity<String> nodeIP = restTemplate.getForEntity(namingServerURL, String.class);
 
         if (!nodeIP.getBody().equals(node.getLocalIP())){
-            final String nodeURL = "http://" + nodeIP.getBody() + ":8081/addReplicatedFile";
 
+            final String nodeURL = "http://" + nodeIP.getBody() + ":8081/addReplicatedFile";
+            
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 

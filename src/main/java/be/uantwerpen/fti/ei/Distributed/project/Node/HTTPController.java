@@ -92,14 +92,14 @@ public class HTTPController {
     }
 
     @RequestMapping(value = "/addReplicatedFile", method = RequestMethod.POST)
-    public ResponseEntity addReplicated(MultipartFile file) throws IOException {
+    public ResponseEntity addReplicated(@RequestParam("file") MultipartFile file) throws IOException {
         logger.info("Received replicated file");
         replicationService.saveFile(file, replicatedPath);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/addLocalFile", method = RequestMethod.POST)
-    public ResponseEntity addLocal(MultipartFile file) throws IOException {
+    public ResponseEntity addLocal(@RequestParam("file") MultipartFile file) throws IOException {
         logger.info("Received local file");
         replicationService.saveFile(file, localPath);
         return new ResponseEntity(HttpStatus.OK);

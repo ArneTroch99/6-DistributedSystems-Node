@@ -35,6 +35,7 @@ public class HTTPController {
     @PostConstruct
     public void setup() {
         try {
+            logger.info("Controller setup");
             new File("/Replication").createNewFile();
             File replication = new File("Replication/replicatedData");
             localFolder = new File("Replication/localData");
@@ -42,7 +43,9 @@ public class HTTPController {
             localFolder.createNewFile();
             localPath = localFolder.getPath();
             replicatedPath = replication.getPath();
+            logger.info("Completed controller setup!");
         } catch (IOException e) {
+            logger.info("!Dikke shit!");
             e.printStackTrace();
         }
     }
@@ -95,18 +98,21 @@ public class HTTPController {
 
     @RequestMapping(value = "/addReplicatedFile", method = RequestMethod.POST)
     public ResponseEntity addReplicated(@RequestParam("file") MultipartFile file) throws IOException {
+        logger.info("Received replicated file");
         replicationService.saveFile(file, replicatedPath);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/addLocalFile", method = RequestMethod.POST)
     public ResponseEntity addLocal(@RequestParam("file") MultipartFile file) throws IOException {
+        logger.info("Received local file");
         replicationService.saveFile(file, localPath);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/deleteReplicatedFile", method = RequestMethod.PUT)
-    public ResponseEntity deleteReplicated(@RequestParam("fileName") String name) throws IOException {
+    public ResponseEntity deleteReplicated(@RequestParam("fileName") String name) {
+        logger.info("Received request to delete file");
         replicationService.deleteFile(name, replicatedPath);
         return new ResponseEntity(HttpStatus.OK);
     }

@@ -1,5 +1,7 @@
 package be.uantwerpen.fti.ei.Distributed.project.Node;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +21,9 @@ import java.util.List;
 
 @Service
 public class ReplicationService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ReplicationService.class);
+
 
     private List<String> localList = new ArrayList<>();
     private RestTemplate restTemplate = new RestTemplate();
@@ -57,20 +62,26 @@ public class ReplicationService {
             } else {
                 temp.add(fileEntry.getName());
                 if (!localList.contains(fileEntry.getName())) {
+                    logger.info("toegevoegd " + fileEntry.getName());
                     replicateFile(fileEntry, nameServerIP);
                     localList.add(fileEntry.getName());
                 }
             }
         }
+        List<String> removed = new ArrayList<>();
         for (String s : localList) {
             if (!temp.contains(s)) {
+                logger.info("verwijder " + (s));
+                removed.add(s);
                 sendDeleteFile(s, node.getNamingServerIp());
             }
+        }
+        for (String s : removed){
+            localList.remove(s);
         }
     }
 
     private void sendDeleteFile(String fileName, String nameServerIP) {
-
         final String namingServerURL = "http://" + nameServerIP + ":8080/fileLocation";
         ResponseEntity<String> nodeIP = restTemplate.getForEntity(namingServerURL, String.class);
 

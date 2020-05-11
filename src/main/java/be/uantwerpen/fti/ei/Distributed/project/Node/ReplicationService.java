@@ -9,10 +9,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -106,16 +103,26 @@ public class ReplicationService {
         if (!nodeIP.getBody().equals(node.getLocalIP())){
 
             final String nodeURL = "http://" + nodeIP.getBody() + ":8081/addReplicatedFile";
-            
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
+            MultiValueMap<String, String> fileMap = new LinkedMultiValueMap<>();
+            ContentDisposition contentDisposition = ContentDisposition
+                    .builder("form-data")
+                    .name("file")
+                    .filename(file.getName())
+                    .build();
+            fileMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
+            HttpEntity<File> fileEntity = new HttpEntity<>(file, fileMap);
+
+
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-            body.add("file", file);
+            body.add("file", fileEntity);
 
             HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-            ResponseEntity<String> response = restTemplate.postForEntity(nodeURL, requestEntity, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(nodeURL, HttpMethod.POST, requestEntity, String.class);
             if (!(response.getStatusCodeValue() == 200)) {
                 System.out.println("Wrong");
             }

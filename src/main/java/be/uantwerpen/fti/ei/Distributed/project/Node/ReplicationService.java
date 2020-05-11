@@ -93,7 +93,7 @@ public class ReplicationService {
 
     private void replicateFile(final File file, String nameServerIP) {
 
-        final String namingServerURL = "http://" + nameServerIP + ":8081/fileLocation";
+        final String namingServerURL = "http://" + nameServerIP + ":8081/fileLocation?filename=" + file.getName();
         ResponseEntity<String> nodeIP = restTemplate.getForEntity(namingServerURL, String.class);
 
         final String nodeURL = "http://" + nodeIP + ":8081/addReplicatedFile";

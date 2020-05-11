@@ -82,10 +82,10 @@ public class ReplicationService {
     }
 
     private void sendDeleteFile(String fileName, String nameServerIP) {
-        final String namingServerURL = "http://" + nameServerIP + ":8080/fileLocation";
+        final String namingServerURL = "http://" + nameServerIP + ":8081/fileLocation";
         ResponseEntity<String> nodeIP = restTemplate.getForEntity(namingServerURL, String.class);
 
-        final String nodeURL = "http://" + nodeIP + ":8080/deleteReplicatedFile?fileName=" + fileName;
+        final String nodeURL = "http://" + nodeIP + ":8081/deleteReplicatedFile?fileName=" + fileName;
 
         restTemplate.put(nodeURL, String.class);
     }
@@ -93,10 +93,10 @@ public class ReplicationService {
 
     private void replicateFile(final File file, String nameServerIP) {
 
-        final String namingServerURL = "http://" + nameServerIP + ":8080/fileLocation";
+        final String namingServerURL = "http://" + nameServerIP + ":8081/fileLocation";
         ResponseEntity<String> nodeIP = restTemplate.getForEntity(namingServerURL, String.class);
 
-        final String nodeURL = "http://" + nodeIP + ":8080/addReplicatedFile";
+        final String nodeURL = "http://" + nodeIP + ":8081/addReplicatedFile";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);

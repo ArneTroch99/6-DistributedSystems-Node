@@ -96,8 +96,8 @@ public class ReplicationService {
         final String namingServerURL = "http://" + nameServerIP + ":8081/fileLocation?filename=" + file.getName();
         ResponseEntity<String> nodeIP = restTemplate.getForEntity(namingServerURL, String.class);
 
-        if (!nodeIP.toString().equals(node.getLocalIP())){
-            final String nodeURL = "http://" + nodeIP + ":8081/addReplicatedFile";
+        if (!nodeIP.getBody().equals(node.getLocalIP())){
+            final String nodeURL = "http://" + nodeIP.getBody() + ":8081/addReplicatedFile";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);

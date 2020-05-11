@@ -35,7 +35,7 @@ public class HTTPController {
     @PostConstruct
     public void setup() {
         logger.info("Controller setup");
-        new File("/Replication").mkdir();
+        new File("Replication").mkdir();
         File replication = new File("Replication/replicatedData");
         localFolder = new File("Replication/localData");
         replication.mkdir();

@@ -56,7 +56,7 @@ public class ReplicationService {
 
     void checkForNewFiles(final File folder, String nameServerIP) {
         List<String> temp = new ArrayList<>();
-        for (final File fileEntry : folder.listFiles()) {
+        for (final File fileEntry : folder.listFiles()){
             if (fileEntry.isDirectory()) {
                 listFilesForFolder(fileEntry);
             } else {

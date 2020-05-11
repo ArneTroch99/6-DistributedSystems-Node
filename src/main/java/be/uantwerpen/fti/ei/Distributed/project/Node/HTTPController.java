@@ -34,20 +34,15 @@ public class HTTPController {
 
     @PostConstruct
     public void setup() {
-        try {
-            logger.info("Controller setup");
-            new File("/Replication").createNewFile();
-            File replication = new File("Replication/replicatedData");
-            localFolder = new File("Replication/localData");
-            replication.createNewFile();
-            localFolder.createNewFile();
-            localPath = localFolder.getPath();
-            replicatedPath = replication.getPath();
-            logger.info("Completed controller setup!");
-        } catch (IOException e) {
-            logger.info("!Dikke shit!");
-            e.printStackTrace();
-        }
+        logger.info("Controller setup");
+        new File("/Replication").mkdir();
+        File replication = new File("Replication/replicatedData");
+        localFolder = new File("Replication/localData");
+        replication.mkdir();
+        localFolder.mkdir();
+        localPath = localFolder.getPath();
+        replicatedPath = replication.getPath();
+        logger.info("Completed controller setup!");
     }
 
     @RequestMapping(value = "/postIP", method = RequestMethod.PUT)
@@ -119,7 +114,7 @@ public class HTTPController {
 
     @Scheduled(fixedRate = 500)
     public void checkLocalData() {
-        if(node.getNamingServerIp() != null) {
+        if (node.getNamingServerIp() != null) {
             replicationService.checkForNewFiles(localFolder, node.getNamingServerIp());
         }
     }

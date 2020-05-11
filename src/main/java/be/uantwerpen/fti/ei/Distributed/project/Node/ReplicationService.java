@@ -96,19 +96,21 @@ public class ReplicationService {
         final String namingServerURL = "http://" + nameServerIP + ":8081/fileLocation?filename=" + file.getName();
         ResponseEntity<String> nodeIP = restTemplate.getForEntity(namingServerURL, String.class);
 
-        final String nodeURL = "http://" + nodeIP + ":8081/addReplicatedFile";
+        if (!nodeIP.toString().equals(node.getLocalIP())){
+            final String nodeURL = "http://" + nodeIP + ":8081/addReplicatedFile";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("file", file);
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+            body.add("file", file);
 
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        ResponseEntity<String> response = restTemplate.postForEntity(nodeURL, requestEntity, String.class);
-        if (!(response.getStatusCodeValue() == 200)) {
-            System.out.println("Wrong");
+            ResponseEntity<String> response = restTemplate.postForEntity(nodeURL, requestEntity, String.class);
+            if (!(response.getStatusCodeValue() == 200)) {
+                System.out.println("Wrong");
+            }
         }
     }
 }

@@ -40,12 +40,28 @@ public class ReplicationRepository {
     }
 
     void deleteFile(String filename) {
-        int id = this.files.getFileLogs().get(filename).get(this.files.getFileLogs().get(filename).size() - 1);
-        if (!(id == (node.getCurrentID()))) {
-            sender.deleteFileByID(filename, id, node.getNamingServerIp());
+        if (this.files.getFileLogs().get(filename).size() > 1) {
+            int id = this.files.getFileLogs().get(filename).get(this.files.getFileLogs().get(filename).size() - 2);
+            if (!(id == (node.getCurrentID()))) {
+                sender.deleteFileByID(filename, id, node.getNamingServerIp());
+            }
         }
         this.files.removeFileLog(filename);
         new File(files.getReplicatedFolder(), filename).delete();
+    }
+
+    File getFile(String filename) {
+        for (final File fileEntry : files.getReplicatedFolder().listFiles()) {
+            if (fileEntry.getName().equals(filename)){
+                return fileEntry;
+            }
+        }
+        for (final File fileEntry : files.getLocalFolder().listFiles()) {
+            if (fileEntry.getName().equals(filename)){
+                return fileEntry;
+            }
+        }
+        return null;
     }
 
     void shutdown() {

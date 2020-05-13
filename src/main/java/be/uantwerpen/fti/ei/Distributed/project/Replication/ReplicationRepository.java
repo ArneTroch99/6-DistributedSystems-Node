@@ -28,7 +28,7 @@ public class ReplicationRepository {
 
     void saveFile(MultipartFile file, String fileLog) {
         this.files.addReplicatedFile(file);
-        this.files.addFileLog(file.getOriginalFilename(), fileLog);
+        this.files.addFileLog(file.getName(), fileLog);
     }
 
     void deleteFile(String filename) {

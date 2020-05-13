@@ -55,7 +55,9 @@ public class ReplicationRepository {
     void checkFolders() {
         try {
             List<String> temp = new ArrayList<>();
+            System.out.println("reading");
             for (final File fileEntry : files.getLocalFolder().listFiles()) {
+                System.out.println(fileEntry.getName());
                 if (!fileEntry.isDirectory()) {
                     temp.add(fileEntry.getName());
                     if (!files.getReplicatedFiles().contains(fileEntry.getName())) {

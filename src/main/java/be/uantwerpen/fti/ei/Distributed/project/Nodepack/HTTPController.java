@@ -1,15 +1,14 @@
-package be.uantwerpen.fti.ei.Distributed.project.Node;
+/*
+package be.uantwerpen.fti.ei.Distributed.project.Nodepack;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
@@ -22,14 +21,14 @@ public class HTTPController {
 
     private static final Logger logger = LoggerFactory.getLogger(HTTPController.class);
     private final ReplicationService replicationService;
-    private final Node node;
+    private final Nodetemp nodetemp;
     private String localPath;
     private String replicatedPath;
     private File localFolder;
 
     @Autowired
-    public HTTPController(Node node, ReplicationService replicationService) {
-        this.node = node;
+    public HTTPController(Nodetemp nodetemp, ReplicationService replicationService) {
+        this.nodetemp = nodetemp;
         this.replicationService = replicationService;
     }
 
@@ -37,12 +36,12 @@ public class HTTPController {
     public void setup() {
         logger.info("Controller setup");
         new File("Replication").mkdir();
-        node.setReplicatedFolder(new File("Replication/replicatedData"));
+        nodetemp.setReplicatedFolder(new File("Replication/replicatedData"));
         localFolder = new File("Replication/localData");
-        node.getReplicatedFolder().mkdir();
+        nodetemp.getReplicatedFolder().mkdir();
         localFolder.mkdir();
         localPath = localFolder.getPath();
-        replicatedPath = node.getReplicatedFolder().getPath();
+        replicatedPath = nodetemp.getReplicatedFolder().getPath();
         logger.info("Completed controller setup!");
     }
 
@@ -50,7 +49,7 @@ public class HTTPController {
     public ResponseEntity test(@RequestParam(name = "ip") String ip) {
         logger.info("Received unicast to update neighbours from " + ip);
         try {
-            node.calcIDs(ip);
+            nodetemp.calcIDs(ip);
             return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -62,9 +61,9 @@ public class HTTPController {
                                            @RequestParam(name = "nodes") int amount) {
         logger.info("Received ip address of the Naming Server " + namingServerIP + " and amount of nodes: " + amount);
         try {
-            node.setNamingServerIp(namingServerIP);
+            nodetemp.setNamingServerIp(namingServerIP);
             if (amount < 1) {
-                node.onlyNode();
+                nodetemp.onlyNode();
             }
             return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
@@ -79,10 +78,10 @@ public class HTTPController {
         try {
             switch (what) {
                 case "upper":
-                    node.setNextID(Integer.parseInt(newID));
+                    nodetemp.setNextID(Integer.parseInt(newID));
                     return new ResponseEntity(HttpStatus.OK);
                 case "lower":
-                    node.setPreviousID(Integer.parseInt(newID));
+                    nodetemp.setPreviousID(Integer.parseInt(newID));
                     return new ResponseEntity(HttpStatus.OK);
                 default:
                     return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -96,10 +95,10 @@ public class HTTPController {
     public ResponseEntity addReplicatedMapping(@RequestParam("fileName") String filename,
                                                @RequestParam("list") List<String> list) {
         logger.info("Received replicated mapping for file " + filename);
-        if(!list.contains(node.getLocalIP())){
-            list.add(node.getLocalIP());
+        if(!list.contains(nodetemp.getLocalIP())){
+            list.add(nodetemp.getLocalIP());
         }
-        node.addMapping(filename, list);
+        nodetemp.addMapping(filename, list);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -127,16 +126,23 @@ public class HTTPController {
     @RequestMapping(value = "/shutdown", method = RequestMethod.PUT)
     public ResponseEntity shutdown() {
         logger.info("Received request to shutdown node");
-        node.shutdown();
+        nodetemp.shutdown();
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/download", method = RequestMethod.GET)
+    public FileSystemResource downloadFile(@RequestParam("file") String filename){
+        return new FileSystemResource(replicationService.getFile(filename));
     }
 
 
     @Scheduled(fixedRate = 500)
     public void checkLocalData() {
-        if (node.getNamingServerIp() != null) {
-            replicationService.checkForNewFiles(localFolder, node.getNamingServerIp());
+        if (nodetemp.getNamingServerIp() != null) {
+            replicationService.checkForNewFiles(localFolder, nodetemp.getNamingServerIp());
         }
     }
 
 }
+*/

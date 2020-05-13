@@ -1,11 +1,6 @@
-package be.uantwerpen.fti.ei.Distributed.project.Node;
+/*
+package be.uantwerpen.fti.ei.Distributed.project.Nodepack;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.content.ContentBody;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +10,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.apache.http.entity.mime.MultipartEntity;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,11 +25,11 @@ public class ReplicationService {
 
     private List<String> localList = new ArrayList<>();
     private RestTemplate restTemplate = new RestTemplate();
-    private Node node;
+    private Nodetemp nodetemp;
 
     @Autowired
-    public ReplicationService(Node node) {
-        this.node = node;
+    public ReplicationService(Nodetemp nodetemp) {
+        this.nodetemp = nodetemp;
     }
 
     void saveFile(MultipartFile file, String pathname) throws IOException {
@@ -43,7 +37,7 @@ public class ReplicationService {
     }
 
     void deleteFile(String name, String pathname) {
-        node.getFileMapping().remove(name);
+        nodetemp.getFileMapping().remove(name);
         new File(pathname, name).delete();
     }
 
@@ -78,7 +72,7 @@ public class ReplicationService {
             if (!temp.contains(s)) {
                 logger.info("verwijder " + (s));
                 removed.add(s);
-                sendDeleteFile(s, node.getNamingServerIp());
+                sendDeleteFile(s, nodetemp.getNamingServerIp());
             }
         }
         for (String s : removed){
@@ -110,7 +104,7 @@ public class ReplicationService {
     }
 
      void sendFile(File file, String nodeIP){
-        if (!nodeIP.equals(node.getLocalIP())){
+        if (!nodeIP.equals(nodetemp.getLocalIP())){
 
             String nodeURL = "http://" + nodeIP + ":8081/addReplicatedFile";
 
@@ -134,7 +128,7 @@ public class ReplicationService {
 
             ResponseEntity<String> response = restTemplate.exchange(nodeURL, HttpMethod.POST, requestEntity, String.class);
 
-            nodeURL = "http://" + nodeIP + ":8081/addReplicatedMapping?fileName" + file.getName() + "list" + node.getFileMapping().get(file.getName()); // This is never gonna work, fix this shit
+            nodeURL = "http://" + nodeIP + ":8081/addReplicatedMapping?fileName" + file.getName() + "list" + nodetemp.getFileMapping().get(file.getName()); // This is never gonna work, fix this shit
             restTemplate.put(nodeURL, String.class);
 
             if (!(response.getStatusCodeValue() == 200)) {
@@ -142,4 +136,13 @@ public class ReplicationService {
             }
         }
     }
-}
+
+    File getFile(String filename){
+        for (File file: nodetemp.getReplicatedFolder().listFiles()) {
+            if (file.getName().equals(filename)){
+                return file;
+            }
+        }
+        return null;
+    }
+}*/

@@ -1,4 +1,5 @@
-package be.uantwerpen.fti.ei.Distributed.project.Node;
+/*
+package be.uantwerpen.fti.ei.Distributed.project.Nodepack;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,7 +7,6 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -21,11 +21,11 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class Node {
+public class Nodetemp {
 
     // TODO: 11/05/2020 Hele hoop shit aanpassen voor de filemapping: zelf verwijderen enzo, gaat nooit werken in de huidige staat
 
-    private static final Logger logger = LoggerFactory.getLogger(Node.class);
+    private static final Logger logger = LoggerFactory.getLogger(Nodetemp.class);
     private final ReplicationService replicationService;
     private final String multicastGroup = "228.5.6.7";
     private final int port = 6789;
@@ -39,14 +39,14 @@ public class Node {
     private Map<String, List<String>> fileMapping = new HashMap<>();
 
     @Autowired
-    public Node(HTTPClient httpClient, ReplicationService replicationService) {
+    public Nodetemp(HTTPClient httpClient, ReplicationService replicationService) {
         this.httpClient = httpClient;
         this.replicationService = replicationService;
     }
 
     @PostConstruct
     private void initNode() {
-        logger.info("Initalizing Node");
+        logger.info("Initalizing Nodepack");
         try {
             localIP = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
@@ -174,4 +174,4 @@ public class Node {
     public Map<String, List<String>> getFileMapping() {
         return fileMapping;
     }
-}
+}*/

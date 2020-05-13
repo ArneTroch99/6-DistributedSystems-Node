@@ -1,4 +1,5 @@
-package be.uantwerpen.fti.ei.Distributed.project.Node;
+/*
+package be.uantwerpen.fti.ei.Distributed.project.Nodepack;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,21 +16,21 @@ import java.net.MulticastSocket;
 public class MulticastController {
 
     private static final Logger logger = LoggerFactory.getLogger(MulticastController.class);
-    private final Node node;
+    private final Nodetemp nodetemp;
     private InetAddress multicastGroup;
     private MulticastSocket multicastSocket;
 
     @Autowired
-    public MulticastController(Node node) {
-        this.node = node;
+    public MulticastController(Nodetemp nodetemp) {
+        this.nodetemp = nodetemp;
     }
 
     @PostConstruct
     public void init() {
         logger.info("Initializing multicast");
         try {
-            multicastGroup = InetAddress.getByName(node.getMulticastGroup());
-            multicastSocket = new MulticastSocket(node.getPort());
+            multicastGroup = InetAddress.getByName(nodetemp.getMulticastGroup());
+            multicastSocket = new MulticastSocket(nodetemp.getPort());
             multicastSocket.joinGroup(multicastGroup);
             multicastSocket.setLoopbackMode(false);
         } catch (Exception e) {
@@ -48,9 +49,9 @@ public class MulticastController {
             e.printStackTrace();
         }
         try {
-            String msg = "@" + node.getLocalIP();
+            String msg = "@" + nodetemp.getLocalIP();
             logger.info("Sending bootstrap message: " + msg);
-            DatagramPacket packet = new DatagramPacket(msg.getBytes(), msg.length(), multicastGroup, node.getPort());
+            DatagramPacket packet = new DatagramPacket(msg.getBytes(), msg.length(), multicastGroup, nodetemp.getPort());
             multicastSocket.send(packet);
         } catch (IOException e) {
             e.printStackTrace();
@@ -58,7 +59,7 @@ public class MulticastController {
     }
 
     private void listenMulticast() {
-        logger.info("Listening to multicast group " + multicastGroup + " on port " + node.getPort());
+        logger.info("Listening to multicast group " + multicastGroup + " on port " + nodetemp.getPort());
         boolean listening = true;
         while (listening) {
             try {
@@ -66,7 +67,7 @@ public class MulticastController {
                 DatagramPacket recv = new DatagramPacket(buffer, buffer.length);
                 multicastSocket.receive(recv);
                 String input = new String(recv.getData());
-                node.processMulti(input);
+                nodetemp.processMulti(input);
             } catch (IOException e) {
                 e.printStackTrace();
                 listening = false;
@@ -75,3 +76,4 @@ public class MulticastController {
     }
 
 }
+*/

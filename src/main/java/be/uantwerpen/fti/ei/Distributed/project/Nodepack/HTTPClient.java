@@ -1,4 +1,5 @@
-package be.uantwerpen.fti.ei.Distributed.project.Node;
+/*
+package be.uantwerpen.fti.ei.Distributed.project.Nodepack;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
@@ -33,3 +34,4 @@ public class HTTPClient {
         restTemplate.put(url, String.class);
     }
 }
+*/

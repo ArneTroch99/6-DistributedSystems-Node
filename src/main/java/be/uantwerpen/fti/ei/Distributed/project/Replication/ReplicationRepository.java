@@ -45,6 +45,7 @@ public class ReplicationRepository {
             sender.deleteFile(filename, node.getNamingServerIp());
         }
         for (final File fileEntry : files.getReplicatedFolder().listFiles()) {
+            System.out.println(files.getFileLogs());
             files.getFileLogs().get(fileEntry.getName()).remove(node.getCurrentID());
             sender.sendFile(fileEntry, sender.getNodeIP(node.getPreviousID(), node.getNamingServerIp()));
         }

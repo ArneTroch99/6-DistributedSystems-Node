@@ -35,8 +35,8 @@ public class getInput {
                 if (input.trim().equals("shutdown")) {
                     logger.info("Received shutdown command");
                     try {
-                        lifeCycleService.shutdown();
                         replicationService.shutdown();
+                        lifeCycleService.shutdown();
                     } catch (JsonProcessingException e) {
                         logger.info("!An error occurred while trying to shutdown this node!");
                         e.printStackTrace();

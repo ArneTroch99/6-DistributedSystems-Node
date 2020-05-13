@@ -71,7 +71,6 @@ public class Files {
             if(!log.contains(node.getCurrentID())){
                 log.add(node.getCurrentID());
             }
-            System.out.println(fileName);
             fileLogs.put(fileName, log);
             logger.info("Successfully saved logs of file " + fileName);
         } catch (JsonProcessingException e) {

@@ -1,6 +1,8 @@
 package be.uantwerpen.fti.ei.Distributed.project.Replication;
 
 import be.uantwerpen.fti.ei.Distributed.project.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
@@ -16,6 +18,7 @@ public class ReplicationRepository {
     private final Files files;
     private final ReplicationHTTPSender sender;
     private final Node node;
+    private final Logger logger = LoggerFactory.getLogger(ReplicationRepository.class);
 
     @Autowired
     ReplicationRepository(Files files, ReplicationHTTPSender sender, Node node) {
@@ -58,16 +61,20 @@ public class ReplicationRepository {
             } else {
                 temp.add(fileEntry.getName());
                 if (!files.getReplicatedFiles().contains(fileEntry.getName())) {
+                    logger.info("Found new file, replicating...");
                     sender.replicateFile(fileEntry, node.getNamingServerIp());
                     files.addToReplicatedFiles((fileEntry.getName()));
+                    logger.info("Replication of new file was succesfull!");
                 }
             }
         }
         List<String> removed = new ArrayList<>();
         for (String filename : files.getReplicatedFiles()) {
             if (!temp.contains(filename)) {
+                logger.info("Found deleted file, deleting...");
                 removed.add(filename);
                 sender.deleteFile(filename, node.getNamingServerIp());
+                logger.info("Deletion of new file was successfull!");
             }
         }
         for (String s : removed) {

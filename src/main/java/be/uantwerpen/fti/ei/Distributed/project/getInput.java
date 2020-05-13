@@ -3,6 +3,7 @@ package be.uantwerpen.fti.ei.Distributed.project;
 import be.uantwerpen.fti.ei.Distributed.project.LifeCycle.LifeCycleService;
 import be.uantwerpen.fti.ei.Distributed.project.Replication.ReplicationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import javafx.application.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ public class getInput {
                     try {
                         lifeCycleService.shutdown();
                         replicationService.shutdown();
+                        System.exit(0);
                     } catch (JsonProcessingException e) {
                         logger.info("!An error occurred while trying to shutdown this node!");
                         e.printStackTrace();

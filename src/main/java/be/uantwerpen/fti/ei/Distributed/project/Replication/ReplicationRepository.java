@@ -32,7 +32,7 @@ public class ReplicationRepository {
     }
 
     void deleteFile(String filename) {
-        int id = this.files.getFileLogs().get(filename).get(this.files.getFileLogs().get(filename).size());
+        int id = this.files.getFileLogs().get(filename).get(this.files.getFileLogs().get(filename).size() - 1);
         if (!(id == (node.getCurrentID()))) {
             sender.deleteFileByID(filename, id, node.getNamingServerIp());
         }

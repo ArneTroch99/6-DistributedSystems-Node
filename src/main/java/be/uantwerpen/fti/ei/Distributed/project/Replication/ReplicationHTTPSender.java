@@ -89,7 +89,6 @@ public class ReplicationHTTPSender {
                     body.add("fileLog", mapper.writeValueAsString(files.getFileLogs().get(file.getName())));
                 } else {
                     List<Integer> temp = new ArrayList<>();
-                    temp.add(node.getCurrentID());
                     body.add("fileLog", mapper.writeValueAsString(temp));
                 }
             } catch (JsonProcessingException e) {

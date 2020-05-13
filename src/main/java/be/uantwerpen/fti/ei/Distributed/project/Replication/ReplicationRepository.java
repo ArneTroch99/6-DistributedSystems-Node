@@ -55,7 +55,7 @@ public class ReplicationRepository {
     @Scheduled(fixedRate = 500, initialDelay = 2000)
     void checkFolders() {
         List<String> temp = new ArrayList<>();
-        for (final File fileEntry : files.getReplicatedFolder().listFiles()) {
+        for (final File fileEntry : files.getLocalFolder().listFiles()) {
             if (fileEntry.isDirectory()) {
                 listFilesForFolder(fileEntry);
             } else {

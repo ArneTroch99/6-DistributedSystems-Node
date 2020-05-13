@@ -38,13 +38,13 @@ public class getInput {
                     try {
                         lifeCycleService.shutdown();
                         replicationService.shutdown();
-                        System.exit(0);
                     } catch (JsonProcessingException e) {
                         logger.info("!An error occurred while trying to shutdown this node!");
                         e.printStackTrace();
                     }
                     logger.info("The node was shutdown successfully!");
                     running = false;
+                    System.exit(0);
                 }
             }
         });

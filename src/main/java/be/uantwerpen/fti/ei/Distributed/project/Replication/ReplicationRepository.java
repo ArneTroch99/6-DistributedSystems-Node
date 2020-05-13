@@ -12,7 +12,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("ALL")
 @Repository
 public class ReplicationRepository {
     private final Files files;
@@ -54,31 +53,34 @@ public class ReplicationRepository {
 
     @Scheduled(fixedRate = 500, initialDelay = 2000)
     void checkFolders() {
-        List<String> temp = new ArrayList<>();
-        for (final File fileEntry : files.getLocalFolder().listFiles()) {
-            if (fileEntry.isDirectory()) {
-                listFilesForFolder(fileEntry);
-            } else {
-                temp.add(fileEntry.getName());
-                if (!files.getReplicatedFiles().contains(fileEntry.getName())) {
-                    logger.info("Found new file, replicating...");
-                    sender.replicateFile(fileEntry, node.getNamingServerIp());
-                    files.addToReplicatedFiles((fileEntry.getName()));
-                    logger.info("Replication of new file was succesfull!");
+        try {
+            List<String> temp = new ArrayList<>();
+            for (final File fileEntry : files.getLocalFolder().listFiles()) {
+                if (!fileEntry.isDirectory()) {
+                    temp.add(fileEntry.getName());
+                    if (!files.getReplicatedFiles().contains(fileEntry.getName())) {
+                        logger.info("Found new file, replicating...");
+                        sender.replicateFile(fileEntry, node.getNamingServerIp());
+                        files.addToReplicatedFiles((fileEntry.getName()));
+                        logger.info("Replication of new file was succesfull!");
+                    }
                 }
             }
-        }
-        List<String> removed = new ArrayList<>();
-        for (String filename : files.getReplicatedFiles()) {
-            if (!temp.contains(filename)) {
-                logger.info("Found deleted file, deleting...");
-                removed.add(filename);
-                sender.deleteFile(filename, node.getNamingServerIp());
-                logger.info("Deletion of new file was successfull!");
+            List<String> removed = new ArrayList<>();
+            for (String filename : files.getReplicatedFiles()) {
+                if (!temp.contains(filename)) {
+                    logger.info("Found deleted file, deleting...");
+                    removed.add(filename);
+                    sender.deleteFile(filename, node.getNamingServerIp());
+                    logger.info("Deletion of new file was successfull!");
+                }
             }
-        }
-        for (String s : removed) {
-            files.removeFromReplicatedFiles(s);
+            for (String s : removed) {
+                files.removeFromReplicatedFiles(s);
+            }
+        } catch (Exception e) {
+            logger.info("!An error occurred while trying to check for file changes");
+            e.printStackTrace();
         }
 
     }

@@ -73,7 +73,7 @@ public class LifeCycleMulticastController {
                     String parsedInput = new String(receivedData.getData()).trim().substring(input.indexOf("@") + 1);
                     if (!parsedInput.equals(service.getLocalIP())) {
                         logger.info("Processing multicast bootstrap from " + parsedInput);
-                        service.processMulti(input);
+                        service.processMulti(parsedInput);
                     }
                 } else {
                     logger.info("!Received unknown multicast input: " + input);

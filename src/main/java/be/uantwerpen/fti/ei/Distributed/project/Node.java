@@ -77,13 +77,13 @@ public class Node {
         return localIP;
     }
 
+    public String getNamingServerIp() {
+        return namingServerIp;
+    }
+
     public void setNamingServerIp(String namingServerIp) {
         logger.info("Changing NamingServerIP to " + namingServerIp);
         this.namingServerIp = namingServerIp;
-    }
-
-    public String getNamingServerIp() {
-        return namingServerIp;
     }
 
     public int getCurrentID() {

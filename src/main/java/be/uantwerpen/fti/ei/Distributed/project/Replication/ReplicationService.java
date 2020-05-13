@@ -18,11 +18,11 @@ public class ReplicationService {
         this.repository.saveFile(file, fileLog);
     }
 
-    void deleteFile(String filename){
+    void deleteFile(String filename) {
         this.repository.deleteFile(filename);
     }
 
-    public void shutdown(){
+    public void shutdown() {
         this.repository.shutdown();
     }
 

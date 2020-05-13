@@ -16,9 +16,9 @@ public class LifeCycleMulticastController {
 
     private static final Logger logger = LoggerFactory.getLogger(LifeCycleMulticastController.class);
     private final LifeCycleService service;
+    private final int port = 6789;
     private InetAddress multicastGroup;
     private MulticastSocket multicastSocket;
-    private final int port = 6789;
 
     @Autowired
     public LifeCycleMulticastController(LifeCycleService service) {
@@ -69,7 +69,7 @@ public class LifeCycleMulticastController {
                 DatagramPacket receivedData = new DatagramPacket(buffer, buffer.length);
                 multicastSocket.receive(receivedData);
                 String input = new String(receivedData.getData());
-                if(input.charAt(0) == '@') {
+                if (input.charAt(0) == '@') {
                     String parsedInput = new String(receivedData.getData()).trim().substring(input.indexOf("@") + 1);
                     if (!parsedInput.equals(service.getLocalIP())) {
                         logger.info("Processing multicast bootstrap from " + parsedInput);

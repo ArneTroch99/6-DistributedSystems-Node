@@ -27,8 +27,16 @@ public class ReplicationRepository {
     }
 
     void saveFile(MultipartFile file, String fileLog) {
-        this.files.addReplicatedFile(file);
-        this.files.addFileLog(file.getOriginalFilename(), fileLog);
+        if (!files.getReplicatedFiles().contains(file.getOriginalFilename())) {
+            this.files.addReplicatedFile(file);
+            this.files.addFileLog(file.getOriginalFilename(), fileLog);
+        }
+    }
+
+    public void refreshFiles() {
+        for (final File fileEntry : files.getReplicatedFolder().listFiles()) {
+            this.sender.replicateFile(fileEntry, node.getNamingServerIp());
+        }
     }
 
     void deleteFile(String filename) {
@@ -45,7 +53,6 @@ public class ReplicationRepository {
             sender.deleteFile(filename, node.getNamingServerIp());
         }
         for (final File fileEntry : files.getReplicatedFolder().listFiles()) {
-            System.out.println(files.getFileLogs());
             List<Integer> logs = files.getFileLogs().get(fileEntry.getName());
             logs.remove(logs.indexOf(node.getCurrentID()));
             sender.sendFile(fileEntry, sender.getNodeIP(node.getPreviousID(), node.getNamingServerIp()));

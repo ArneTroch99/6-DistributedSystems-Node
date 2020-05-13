@@ -1,6 +1,7 @@
 package be.uantwerpen.fti.ei.Distributed.project.LifeCycle;
 
 import be.uantwerpen.fti.ei.Distributed.project.Node;
+import be.uantwerpen.fti.ei.Distributed.project.Replication.ReplicationRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -14,11 +15,13 @@ public class LifeCycleRepository {
 
     private final Node node;
     private final LifeCycleHTTPSender httpSender;
+    private final ReplicationRepository replicationRepository;
 
     @Autowired
-    public LifeCycleRepository(Node node, LifeCycleHTTPSender httpSender) {
+    public LifeCycleRepository(Node node, LifeCycleHTTPSender httpSender, ReplicationRepository replicationRepository) {
         this.node = node;
         this.httpSender = httpSender;
+        this.replicationRepository = replicationRepository;
     }
 
     String getLocalIP() {
@@ -28,6 +31,7 @@ public class LifeCycleRepository {
     void processMulti(String input) {
         if (this.node.calcIDs(input)) {
             this.httpSender.postIP(input, getLocalIP());
+            this.replicationRepository.refreshFiles();
         }
     }
 

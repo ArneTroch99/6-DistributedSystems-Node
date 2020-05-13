@@ -10,35 +10,35 @@ public class LifeCycleService {
     private final LifeCycleRepository repository;
 
     @Autowired
-    public LifeCycleService(LifeCycleRepository repository){
+    public LifeCycleService(LifeCycleRepository repository) {
         this.repository = repository;
     }
 
-    String getLocalIP(){
+    String getLocalIP() {
         return this.repository.getLocalIP();
     }
 
-    void processMulti(String input){
+    void processMulti(String input) {
         this.repository.processMulti(input);
     }
 
-    void processPostIP(String input){
+    void processPostIP(String input) {
         this.repository.processPostIP(input);
     }
 
-    void setNamingServerIP(String ip){
+    void setNamingServerIP(String ip) {
         this.repository.setNamingServerIP(ip);
     }
 
-    void setNextID(String ID){
+    void setNextID(String ID) {
         this.repository.setNextID(Integer.parseInt(ID));
     }
 
-    void setPreviousID(String ID){
+    void setPreviousID(String ID) {
         this.repository.setPreviousID(Integer.parseInt(ID));
     }
 
-    void setOnlyNode(){
+    void setOnlyNode() {
         this.repository.setOnlyNode();
     }
 

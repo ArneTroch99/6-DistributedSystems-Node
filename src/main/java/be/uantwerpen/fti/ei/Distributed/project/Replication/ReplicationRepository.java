@@ -81,7 +81,7 @@ public class ReplicationRepository {
                 files.removeFromReplicatedFiles(s);
             }
         } catch (Exception e) {
-            logger.info("!An error occurred while trying to check for file changes");
+            logger.info("!An error occurred while trying to check for file changes!");
             e.printStackTrace();
         }
 

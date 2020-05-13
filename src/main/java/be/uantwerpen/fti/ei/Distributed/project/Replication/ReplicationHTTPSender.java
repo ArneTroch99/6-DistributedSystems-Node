@@ -13,6 +13,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("ALL")
 @Component
@@ -38,7 +40,7 @@ public class ReplicationHTTPSender {
         sendFile(file, nodeIP.getBody());
     }
 
-    String getNodeIP(int ID, String nameServerIP){
+    String getNodeIP(int ID, String nameServerIP) {
         logger.info("Asking for the ip address of node " + ID);
         final String namingServerURL = "http://" + nameServerIP + ":8081/nodeip?id=" + ID;
         ResponseEntity<String> nodeIP = restTemplate.getForEntity(namingServerURL, String.class);
@@ -47,7 +49,7 @@ public class ReplicationHTTPSender {
     }
 
 
-    void deleteFile(String filename, String nameServerIP){
+    void deleteFile(String filename, String nameServerIP) {
         logger.info("Asking for location to delete file " + filename);
         final String namingServerURL = "http://" + nameServerIP + ":8081/fileLocation?filename=" + filename;
         ResponseEntity<String> nodeIP = restTemplate.getForEntity(namingServerURL, String.class);
@@ -57,7 +59,7 @@ public class ReplicationHTTPSender {
         logger.info("Request to delete file was sent successfully!");
     }
 
-    void deleteFileByID(String filename, int ID, String nameServerIP){
+    void deleteFileByID(String filename, int ID, String nameServerIP) {
         logger.info("Asking for ip address of node " + ID);
         final String namingServerURL = "http://" + nameServerIP + ":8081/nodeip?id=" + ID;
         ResponseEntity<String> nodeIP = restTemplate.getForEntity(namingServerURL, String.class);
@@ -83,7 +85,13 @@ public class ReplicationHTTPSender {
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
             body.add("file", fileEntity);
             try {
-                body.add("fileLog", mapper.writeValueAsString(files.getFileLogs().get(file.getName())));
+                if (files.getFileLogs().containsKey(file.getName())) {
+                    body.add("fileLog", mapper.writeValueAsString(files.getFileLogs().get(file.getName())));
+                } else {
+                    List<Integer> temp = new ArrayList<>();
+                    temp.add(node.getCurrentID());
+                    body.add("fileLog", mapper.writeValueAsString(temp));
+                }
             } catch (JsonProcessingException e) {
                 logger.info("!An error occurred while tryin to write logs as json!");
                 e.printStackTrace();

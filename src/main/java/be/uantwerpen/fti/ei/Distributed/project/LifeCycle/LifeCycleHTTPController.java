@@ -1,5 +1,6 @@
 package be.uantwerpen.fti.ei.Distributed.project.LifeCycle;
 
+import be.uantwerpen.fti.ei.Distributed.project.Replication.ReplicationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +19,12 @@ public class LifeCycleHTTPController {
 
     private static final Logger logger = LoggerFactory.getLogger(LifeCycleHTTPController.class);
     private final LifeCycleService service;
+    private final ReplicationService replicationService;
 
     @Autowired
-    public LifeCycleHTTPController(LifeCycleService service){
+    public LifeCycleHTTPController(LifeCycleService service, ReplicationService replicationService){
         this.service = service;
+        this.replicationService = replicationService;
     }
 
     @PostConstruct
@@ -88,6 +91,32 @@ public class LifeCycleHTTPController {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @RequestMapping(value = "/shutdown", method = RequestMethod.PUT)
+    public ResponseEntity shutdown(){
+        logger.info("Received command to shutdown this node!");
+        try {
+            service.shutdown();
+            replicationService.shutdown();
+            logger.info("The node was shutdown successfully!");
+            Thread t = new Thread(() -> {
+                try {
+                    Thread.sleep(400);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.exit(0);
+            });
+            t.start();
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            logger.info("!An error occurred while trying to shutdown this node!");
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.CONFLICT);
+        }
+    }
+
+    @RequestMapping()
 
     private void failure(){
         try {

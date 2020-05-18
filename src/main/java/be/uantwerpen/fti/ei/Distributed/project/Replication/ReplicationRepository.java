@@ -75,6 +75,15 @@ public class ReplicationRepository {
         }
     }
 
+    List<List<String>> getFiles(){
+        List<String> replicated = new ArrayList<>(listFilesForFolder(files.getReplicatedFolder()));
+        List<String> local = new ArrayList<>(listFilesForFolder(files.getLocalFolder()));
+        List<List<String>> temp = new ArrayList<>();
+        temp.add(replicated);
+        temp.add(local);
+        return temp;
+    }
+
 
     @Scheduled(fixedRate = 500, initialDelay = 2000)
     void checkFolders() {

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.List;
 
 @Service
 public class ReplicationService {
@@ -30,6 +31,10 @@ public class ReplicationService {
 
     File getFile(String filename){
         return this.repository.getFile(filename);
+    }
+
+    List<List<String>> getFiles(){
+        return this.repository.getFiles();
     }
 
 }

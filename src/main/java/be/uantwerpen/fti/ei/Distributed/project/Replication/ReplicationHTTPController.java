@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @Controller
 public class ReplicationHTTPController {
@@ -50,13 +51,20 @@ public class ReplicationHTTPController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/getfiles", method = RequestMethod.GET)
+    public List<List<String>> getFiles() {
+        logger.info("Received request for all files");
+        return this.replicationService.getFiles();
+    }
+
     @RequestMapping(value = "/download", method = RequestMethod.GET)
     public ResponseEntity<ByteArrayResource> downloadFile(@RequestParam(name = "filename") String filename) {
         logger.info("Received request to download file " + filename);
-        File file = this.replicationService.getFile(filename);
-        Path path = Paths.get(file.getAbsolutePath());
-        ByteArrayResource resource;
         try {
+            File file = this.replicationService.getFile(filename);
+            Path path = Paths.get(file.getAbsolutePath());
+            ByteArrayResource resource;
+
             resource = new ByteArrayResource(Files.readAllBytes(path));
             HttpHeaders headers = new HttpHeaders();
             headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -68,7 +76,7 @@ public class ReplicationHTTPController {
                     .contentLength(file.length())
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(resource);
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             logger.info("!An error occurred while trying to download file " + filename + "!");
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); // idk about this

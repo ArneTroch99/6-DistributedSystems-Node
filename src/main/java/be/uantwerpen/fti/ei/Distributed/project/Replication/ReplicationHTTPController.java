@@ -12,9 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import sun.misc.Resource;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -53,7 +51,7 @@ public class ReplicationHTTPController {
     }
 
     @RequestMapping(value = "/download", method = RequestMethod.GET)
-    public ResponseEntity<ByteArrayResource> downloadFile(@RequestParam(name = "filename") String filename){
+    public ResponseEntity<ByteArrayResource> downloadFile(@RequestParam(name = "filename") String filename) {
         logger.info("Received request to download file " + filename);
         File file = this.replicationService.getFile(filename);
         Path path = Paths.get(file.getAbsolutePath());
@@ -73,8 +71,8 @@ public class ReplicationHTTPController {
         } catch (IOException e) {
             logger.info("!An error occurred while trying to download file " + filename + "!");
             e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // idk about this
         }
-        return new ResponseEntity(HttpStatus.OK); // idk about this
     }
 
 }

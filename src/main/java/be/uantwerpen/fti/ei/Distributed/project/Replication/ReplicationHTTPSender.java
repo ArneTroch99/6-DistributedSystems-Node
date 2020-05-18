@@ -54,9 +54,13 @@ public class ReplicationHTTPSender {
         final String namingServerURL = "http://" + nameServerIP + ":8081/fileLocation?filename=" + filename;
         ResponseEntity<String> nodeIP = restTemplate.getForEntity(namingServerURL, String.class);
         logger.info("Location for file " + filename + " received, deleting file");
-        final String nodeURL = "http://" + nodeIP.getBody() + ":8081/deleteReplicatedFile?fileName=" + filename;
-        restTemplate.put(nodeURL, String.class);
-        logger.info("Request to delete file was sent successfully!");
+        if (nodeIP.getBody().equals(node.getLocalIP())) {
+            logger.info("Location is this node!");
+        } else {
+            final String nodeURL = "http://" + nodeIP.getBody() + ":8081/deleteReplicatedFile?fileName=" + filename;
+            restTemplate.put(nodeURL, String.class);
+            logger.info("Request to delete file was sent successfully!");
+        }
     }
 
     void deleteFileByID(String filename, int ID, String nameServerIP) {

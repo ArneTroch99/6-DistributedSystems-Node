@@ -28,7 +28,7 @@ public class Files {
     private File localFolder;
     private File replicatedFolder;
     private Map<String, List<Integer>> fileLogs = new HashMap<>();
-    private List<String> replicatedFiles = new ArrayList<>();
+    private List<String> localReplicated = new ArrayList<>();
 
     @Autowired
     Files(Node node){
@@ -100,19 +100,20 @@ public class Files {
         this.replicatedFolder = replicatedFolder;
     }
 
-    public List<String> getReplicatedFiles() {
-        return replicatedFiles;
+    public List<String> getLocalReplicated() {
+        return localReplicated;
     }
 
-    public void addToReplicatedFiles(String fileName){
-        replicatedFiles.add(fileName);
+    public void addToLocalReplicated(String fileName){
+        localReplicated.add(fileName);
     }
 
-    public void removeFromReplicatedFiles(String fileName){
-        replicatedFiles.remove(fileName);
+    public void removeFromLocalReplicated(String fileName){
+        localReplicated.remove(fileName);
     }
 
     public Map<String, List<Integer>> getFileLogs() {
         return fileLogs;
     }
+
 }

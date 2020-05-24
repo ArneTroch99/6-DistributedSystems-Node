@@ -96,8 +96,8 @@ public class LifeCycleHTTPController {
     public ResponseEntity shutdown(){
         logger.info("Received command to shutdown this node!");
         try {
-            service.shutdown();
             replicationService.shutdown();
+            service.shutdown();
             logger.info("The node was shutdown successfully!");
             Thread t = new Thread(() -> {
                 try {
@@ -109,7 +109,7 @@ public class LifeCycleHTTPController {
             });
             t.start();
             return new ResponseEntity(HttpStatus.OK);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             logger.info("!An error occurred while trying to shutdown this node!");
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.CONFLICT);

@@ -16,7 +16,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("ALL")
 @Component
 public class ReplicationHTTPSender {
 
@@ -37,6 +36,7 @@ public class ReplicationHTTPSender {
         final String namingServerURL = "http://" + nameServerIP + ":8081/fileLocation?filename=" + file.getName();
         ResponseEntity<String> nodeIP = restTemplate.getForEntity(namingServerURL, String.class);
         logger.info("Location for file " + file.getName() + " received, sending file");
+        files.addToLocalReplicated((file.getName()));
         sendFile(file, nodeIP.getBody());
     }
 

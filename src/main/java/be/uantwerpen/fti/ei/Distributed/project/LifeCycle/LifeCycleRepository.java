@@ -61,8 +61,12 @@ public class LifeCycleRepository {
         ObjectMapper objectMapper = new ObjectMapper();
         TypeFactory typeFactory = objectMapper.getTypeFactory();
         List<String> neighbours = objectMapper.readValue(response, typeFactory.constructCollectionType(List.class, String.class));
-        this.httpSender.updateNeighbor(neighbours.get(0), "upper", node.getNextID());
-        this.httpSender.updateNeighbor(neighbours.get(1), "lower", node.getPreviousID());
+        if (!neighbours.get(0).equals(node.getLocalIP())) {
+            this.httpSender.updateNeighbor(neighbours.get(0), "upper", node.getNextID());
+        }
+        if(!neighbours.get(1).equals(node.getLocalIP())) {
+            this.httpSender.updateNeighbor(neighbours.get(1), "lower", node.getPreviousID());
+        }
     }
 
 }

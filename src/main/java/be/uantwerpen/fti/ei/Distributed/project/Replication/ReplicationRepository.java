@@ -27,7 +27,7 @@ public class ReplicationRepository {
     }
 
     void saveFile(MultipartFile file, String fileLog) {
-        if (!files.getReplicatedFiles().contains(file.getOriginalFilename())) {
+        if (!files.getLocalReplicated().contains(file.getOriginalFilename())) {
             this.files.addReplicatedFile(file);
             this.files.addFileLog(file.getOriginalFilename(), fileLog);
         }
@@ -65,7 +65,7 @@ public class ReplicationRepository {
     }
 
     void shutdown() {
-        for (String filename : files.getReplicatedFiles()) {
+        for (String filename : files.getLocalReplicated()) {
             sender.deleteFile(filename, node.getNamingServerIp());
         }
         for (final File fileEntry : files.getReplicatedFolder().listFiles()) {
@@ -92,16 +92,15 @@ public class ReplicationRepository {
             for (final File fileEntry : files.getLocalFolder().listFiles()) {
                 if (!fileEntry.isDirectory()) {
                     temp.add(fileEntry.getName());
-                    if (!files.getReplicatedFiles().contains(fileEntry.getName())) {
+                    if (!files.getLocalReplicated().contains(fileEntry.getName())) {
                         logger.info("Found new file, replicating...");
                         sender.replicateFile(fileEntry, node.getNamingServerIp());
-                        files.addToReplicatedFiles((fileEntry.getName()));
                         logger.info("Replication of new file was succesfull!");
                     }
                 }
             }
             List<String> removed = new ArrayList<>();
-            for (String filename : files.getReplicatedFiles()) {
+            for (String filename : files.getLocalReplicated()) {
                 if (!temp.contains(filename)) {
                     logger.info("Found deleted file, deleting...");
                     removed.add(filename);
@@ -110,7 +109,7 @@ public class ReplicationRepository {
                 }
             }
             for (String s : removed) {
-                files.removeFromReplicatedFiles(s);
+                files.removeFromLocalReplicated(s);
             }
         } catch (Exception e) {
             logger.info("!An error occurred while trying to check for file changes!");

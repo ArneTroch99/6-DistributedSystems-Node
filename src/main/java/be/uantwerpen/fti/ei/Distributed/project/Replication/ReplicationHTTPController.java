@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,6 +52,7 @@ public class ReplicationHTTPController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @ResponseBody
     @RequestMapping(value = "/getfiles", method = RequestMethod.GET)
     public List<List<String>> getFiles() {
         logger.info("Received request for all files");
@@ -79,7 +81,7 @@ public class ReplicationHTTPController {
         } catch (IOException | NullPointerException e) {
             logger.info("!An error occurred while trying to download file " + filename + "!");
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // idk about this
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
 

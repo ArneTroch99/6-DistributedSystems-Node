@@ -73,14 +73,10 @@ public class SyncAgent extends Agent {
 
                 if(!changed) {
                     ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-                    try {
-                        msg.setContentObject(agentList);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    //msg.setContentObject(agentList);
+                    msg.setContent("Test");
                     AID nextAgent = new AID(Integer.toString((node.getNextID())), AID.ISGUID);
                     nextAgent.addAddresses("http://" + nextIP + ":8083/acc");
-                    System.out.println(msg.getAllReceiver());
                     send(msg);
                 }
             }
@@ -101,13 +97,13 @@ public class SyncAgent extends Agent {
                         }
                         else
                         {
-                            block();
+                            //block();
                         }
                     }
                 }
                 else
                 {
-                    block();
+                    //block();
                 }
             }
         });

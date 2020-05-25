@@ -25,7 +25,6 @@ public class Node {
     private String namingServerIp = "";
     private Map<String, fileProperties> fileList = new HashMap<>();
 
-
     @PostConstruct
     public void initialize() {
         logger.info("Initializing node");
@@ -113,5 +112,9 @@ public class Node {
 
     public void setPreviousID(int previousID) {
         this.previousID = previousID;
+    }
+
+    public Map<String, fileProperties> getFileList() {
+        return fileList;
     }
 }

@@ -1,21 +1,23 @@
 package be.uantwerpen.fti.ei.Distributed.project.Agents;
 
+import be.uantwerpen.fti.ei.Distributed.project.Node;
 import be.uantwerpen.fti.ei.Distributed.project.fileProperties;
+import jade.core.Agent;
 
 import java.io.File;
 import java.io.Serializable;
 import java.util.*;
 
-public class SyncAgent implements Serializable, Runnable {
+public class SyncAgent extends Agent implements Serializable, Runnable {
 
-    private File localFolder = new File("Replication/LocalData");
+    private final File localFolder = new File("Replication/LocalData");
     private File replicatedFolder = new File("Replication/ReplicatedData");
-    private int nodeID;
-    private Map<String, fileProperties> agentList;
+    private final int nodeID;
+    private final Map<String, fileProperties> agentList;
 
-    public SyncAgent(int nodeID, Map<String, fileProperties> nodeList){
-        this.nodeID = nodeID;
-        this.agentList = nodeList;
+    public SyncAgent(Node node){
+        this.nodeID = node.getCurrentID();
+        this.agentList = node.getFileList();
     }
 
     @Override

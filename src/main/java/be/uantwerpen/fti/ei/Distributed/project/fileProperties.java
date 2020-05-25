@@ -1,6 +1,8 @@
 package be.uantwerpen.fti.ei.Distributed.project;
 
-public class fileProperties {
+import java.io.Serializable;
+
+public class fileProperties implements Serializable {
     public int fileNodeID;
     public Boolean fileLock;
 

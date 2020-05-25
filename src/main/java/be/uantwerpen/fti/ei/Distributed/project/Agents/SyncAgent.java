@@ -88,6 +88,7 @@ public class SyncAgent extends Agent {
             public void action() {
                 ACLMessage msg = myAgent.receive();
                 if(msg != null){
+                    System.out.println("message received");
                     if(msg.getPerformative()== ACLMessage.REQUEST)
                     {
                         String content = msg.getContent();

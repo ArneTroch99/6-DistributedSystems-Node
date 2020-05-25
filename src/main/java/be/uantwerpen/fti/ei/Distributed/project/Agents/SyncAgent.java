@@ -37,11 +37,13 @@ public class SyncAgent extends Agent {
 
     @Override
     protected void setup(){
-        while(node.getNamingServerIp() == "" || node.getNextID() == 0) {}
+        while(node.getNamingServerIp() == "" || node.getNextID() == 0) {
+            System.out.println(node.getNamingServerIp());
+            System.out.println(node.getNextID());
+        }
         addBehaviour(new CyclicBehaviour(this) {
             @Override
             public void action() {
-                System.out.println(node.getNamingServerIp());
                 final String namingServerURL = "http://" + node.getNamingServerIp() + ":8081/nodeip?id=" + 23012;
                 ResponseEntity<String> nextNodeIP = restTemplate.getForEntity(namingServerURL, String.class);
                 System.out.println(nextNodeIP);

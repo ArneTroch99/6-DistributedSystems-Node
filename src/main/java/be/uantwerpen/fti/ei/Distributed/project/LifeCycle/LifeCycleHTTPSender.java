@@ -31,7 +31,7 @@ public class LifeCycleHTTPSender {
     String leaveNamingServer(String destinationIP, int nodeID, int lower, int upper) {
         try {
             logger.info("Sending leave message to naming server");
-            String url = "http://" + destinationIP + ":8082/leave?id=" + nodeID + "&lower=" + lower + "&upper=" + upper;
+            String url = "http://" + destinationIP + ":8081/leave?id=" + nodeID + "&lower=" + lower + "&upper=" + upper;
             String response =  restTemplate.getForObject(url, String.class);
             logger.info("Successfully left the naming server!");
             return response;

@@ -5,10 +5,6 @@ import be.uantwerpen.fti.ei.Distributed.project.fileProperties;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
-import jade.domain.AMSService;
-import jade.domain.FIPAAgentManagement.AMSAgentDescription;
-import jade.domain.FIPAAgentManagement.SearchConstraints;
-import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -16,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 public class SyncAgent extends Agent {
@@ -79,7 +74,7 @@ public class SyncAgent extends Agent {
                     nextAgent.addAddresses("http://" + nextIP + ":7778/acc");
                     msg.addReceiver(nextAgent);
                     msg.setConversationId("ABC");
-                    myAgent.send(msg);
+                    send(msg);
                     System.out.println("\nMessage to " + nextAgent);
                 }
             }
@@ -89,7 +84,7 @@ public class SyncAgent extends Agent {
             @Override
             public void action() {
                 MessageTemplate mt = MessageTemplate.MatchConversationId("ABC");
-                ACLMessage msg = myAgent.receive(mt);
+                ACLMessage msg = receive(mt);
                 if(msg != null){
                     System.out.println("message received" + msg);
                     if(msg.getPerformative()== ACLMessage.REQUEST)

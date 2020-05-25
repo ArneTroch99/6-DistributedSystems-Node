@@ -80,7 +80,7 @@ public class SyncAgent extends Agent {
                     }
                     AID nextAgent = new AID(Integer.toString((node.getNextID())), AID.ISGUID);
                     nextAgent.addAddresses("http://" + nextIP + ":8083/acc");
-                    System.out.println(msg);
+                    System.out.println(msg.getContent());
                     send(msg);
                 }
                 block();

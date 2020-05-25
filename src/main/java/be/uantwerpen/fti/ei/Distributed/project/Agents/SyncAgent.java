@@ -41,7 +41,7 @@ public class SyncAgent extends Agent {
         addBehaviour(new CyclicBehaviour(this) {
             @Override
             public void action() {
-                final String namingServerURL = "http://" + namingServerIP + ":8081/nodeip?id=" + nextNodeID;
+                final String namingServerURL = "http://" + "10.0.13.17" + ":8081/nodeip?id=" + 23012;
                 ResponseEntity<String> nextNodeIP = restTemplate.getForEntity(namingServerURL, String.class);
                 System.out.println(nextNodeID);
                 //logger.info("Received ip address of node " + ID);

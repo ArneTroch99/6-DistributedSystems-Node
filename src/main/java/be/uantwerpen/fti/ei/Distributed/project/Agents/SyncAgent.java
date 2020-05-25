@@ -10,6 +10,7 @@ import jade.domain.FIPAAgentManagement.AMSAgentDescription;
 import jade.domain.FIPAAgentManagement.SearchConstraints;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -77,7 +78,8 @@ public class SyncAgent extends Agent {
                     AID nextAgent = new AID(Integer.toString((node.getNextID())), AID.ISGUID);
                     nextAgent.addAddresses("http://" + nextIP + ":7778/acc");
                     msg.addReceiver(nextAgent);
-                    send(msg);
+                    msg.setConversationId("ABC");
+                    myAgent.send(msg);
                     System.out.println("\nMessage to " + nextAgent);
                 }
             }
@@ -86,8 +88,9 @@ public class SyncAgent extends Agent {
         addBehaviour(new CyclicBehaviour(this) {
             @Override
             public void action() {
-                ACLMessage msg = myAgent.receive();
-                System.out.println("Ghelllo");
+                MessageTemplate mt = MessageTemplate.MatchConversationId("ABC");
+                ACLMessage msg = myAgent.receive(mt);
+                System.out.println("Ghelllo " + msg);
                 if(msg != null){
                     System.out.println("message received");
                     if(msg.getPerformative()== ACLMessage.REQUEST)

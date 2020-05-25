@@ -83,7 +83,7 @@ public class SyncAgent extends Agent {
             }
         });
 
-        addBehaviour(new CyclicBehaviour() {
+        addBehaviour(new CyclicBehaviour(this) {
             @Override
             public void action() {
                 ACLMessage msg = myAgent.receive();

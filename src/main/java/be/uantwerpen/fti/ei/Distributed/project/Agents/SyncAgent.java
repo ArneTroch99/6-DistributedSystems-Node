@@ -72,7 +72,7 @@ public class SyncAgent extends Agent {
                 }
 
                 if(changed) {
-                    changed = false;
+                    //changed = false;
                     ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
                     try {
                         msg.setContentObject(agentList);

@@ -72,11 +72,11 @@ public class SyncAgent extends Agent {
                 }
 
                 if(!changed) {
-                    ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+                    ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
                     //msg.setContentObject(agentList);
                     msg.setContent("Test");
                     AID nextAgent = new AID(Integer.toString((node.getNextID())), AID.ISGUID);
-                    nextAgent.addAddresses("http://" + nextIP + ":8083/acc");
+                    nextAgent.addAddresses("http://" + nextIP + ":7778/acc");
                     msg.addReceiver(nextAgent);
                     send(msg);
                     System.out.println("\nMessage to " + nextAgent);
@@ -89,7 +89,7 @@ public class SyncAgent extends Agent {
             public void action() {
                 ACLMessage msg = myAgent.receive();
                 if(msg != null){
-                    if(msg.getPerformative()== ACLMessage.INFORM)
+                    if(msg.getPerformative()== ACLMessage.REQUEST)
                     {
                         String content = msg.getContent();
                         if ((content != null))

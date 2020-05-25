@@ -22,26 +22,26 @@ public class SyncAgent extends Agent {
 
     private final File localFolder = new File("Replication/LocalData");
     private File replicatedFolder = new File("Replication/ReplicatedData");
-    private final int nodeID, nextNodeID;
+    private final Node node;
+    private final int nodeID;
     private final HashMap<String, fileProperties> agentList;
-    private final String namingServerIP;
     private final RestTemplate restTemplate;
 
     public SyncAgent(RestTemplateBuilder restTemplateBuilder, Node node) {
-        this.restTemplate = restTemplateBuilder.build();
+        this.node = node;
         this.nodeID = node.getCurrentID();
-        this.nextNodeID = node.getNextID();
+        this.restTemplate = restTemplateBuilder.build();
         this.agentList = node.getFileList();
-        this.namingServerIP = node.getNamingServerIp();
     }
 
 
     @Override
     protected void setup(){
+        while(node.getNamingServerIp() == "" || node.getNextID() == 0) {}
         addBehaviour(new CyclicBehaviour(this) {
             @Override
             public void action() {
-                final String namingServerURL = "http://" + namingServerIP + ":8081/nodeip?id=" + 23012;
+                final String namingServerURL = "http://" + node.getNamingServerIp() + ":8081/nodeip?id=" + 23012;
                 ResponseEntity<String> nextNodeIP = restTemplate.getForEntity(namingServerURL, String.class);
                 System.out.println(nextNodeIP);
                 //logger.info("Received ip address of node " + ID);

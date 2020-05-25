@@ -42,10 +42,6 @@ public class SyncAgent extends Agent {
             System.out.println(node.getNamingServerIp());
             System.out.println(node.getNextID());
         }
-        final String namingServerURL = "http://" + node.getNamingServerIp() + ":8081/nodeip?id=" + node.getNextID();
-        ResponseEntity<String> nextNodeIP = restTemplate.getForEntity(namingServerURL, String.class);
-        nextIP = nextNodeIP.getBody();
-        System.out.println(nextNodeIP.getBody());
         addBehaviour(new CyclicBehaviour(this) {
             @Override
             public void action() {
@@ -72,6 +68,9 @@ public class SyncAgent extends Agent {
                 }
 
                 if(!changed) {
+                    final String namingServerURL = "http://" + node.getNamingServerIp() + ":8081/nodeip?id=" + node.getNextID();
+                    ResponseEntity<String> nextNodeIP = restTemplate.getForEntity(namingServerURL, String.class);
+                    nextIP = nextNodeIP.getBody();
                     ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
                     //msg.setContentObject(agentList);
                     msg.setContent("Test");

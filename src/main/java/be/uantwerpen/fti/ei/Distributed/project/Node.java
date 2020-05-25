@@ -23,7 +23,7 @@ public class Node {
     private int nextID = 0;
     private int previousID = 0;
     private String namingServerIp = "";
-    private Map<String, fileProperties> fileList = new HashMap<>();
+    private HashMap<String, fileProperties> fileList = new HashMap<>();
 
     @PostConstruct
     public void initialize() {
@@ -114,7 +114,7 @@ public class Node {
         this.previousID = previousID;
     }
 
-    public Map<String, fileProperties> getFileList() {
+    public HashMap<String, fileProperties> getFileList() {
         return fileList;
     }
 }

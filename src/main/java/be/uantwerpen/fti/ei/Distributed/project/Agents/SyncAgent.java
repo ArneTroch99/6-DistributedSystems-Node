@@ -90,9 +90,8 @@ public class SyncAgent extends Agent {
             public void action() {
                 MessageTemplate mt = MessageTemplate.MatchConversationId("ABC");
                 ACLMessage msg = myAgent.receive(mt);
-                System.out.println("Ghelllo " + msg);
                 if(msg != null){
-                    System.out.println("message received");
+                    System.out.println("message received" + msg);
                     if(msg.getPerformative()== ACLMessage.REQUEST)
                     {
                         String content = msg.getContent();
@@ -103,13 +102,13 @@ public class SyncAgent extends Agent {
                         }
                         else
                         {
-                            //block();
+                            block();
                         }
                     }
                 }
                 else
                 {
-                    //block();
+                    block();
                 }
             }
         });

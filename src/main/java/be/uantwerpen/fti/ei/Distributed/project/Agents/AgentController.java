@@ -27,6 +27,8 @@ public class AgentController {
 
     @PostConstruct
     private void syncThread(){
+        while(node.getNamingServerIp() == "") {
+        }
         Thread agentSync = new Thread(new SyncAgent(this.restTemplateBuilder, this.node));
         agentSync.start();
     }

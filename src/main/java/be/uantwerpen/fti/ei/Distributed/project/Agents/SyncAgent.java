@@ -24,6 +24,7 @@ public class SyncAgent extends Agent {
     private File replicatedFolder = new File("Replication/ReplicatedData");
     private final Node node;
     private final int nodeID;
+    private int nextIP;
     private final HashMap<String, fileProperties> agentList;
     private final RestTemplate restTemplate;
 
@@ -41,13 +42,12 @@ public class SyncAgent extends Agent {
             System.out.println(node.getNamingServerIp());
             System.out.println(node.getNextID());
         }
+        final String namingServerURL = "http://" + node.getNamingServerIp() + ":8081/nodeip?id=" + node.getNextID();
+        ResponseEntity<String> nextNodeIP = restTemplate.getForEntity(namingServerURL, String.class);
+        System.out.println(nextNodeIP.getBody());
         addBehaviour(new CyclicBehaviour(this) {
             @Override
             public void action() {
-                final String namingServerURL = "http://" + node.getNamingServerIp() + ":8081/nodeip?id=" + 23012;
-                ResponseEntity<String> nextNodeIP = restTemplate.getForEntity(namingServerURL, String.class);
-                System.out.println(nextNodeIP);
-                //logger.info("Received ip address of node " + ID);
                 List<String> localFileNames = new ArrayList<>();
                 File[] localFiles = localFolder.listFiles();
                 Boolean changed = false;
@@ -71,13 +71,43 @@ public class SyncAgent extends Agent {
                 }
 
                 if(changed) {
+                    changed = false;
                     ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
                     try {
                         msg.setContentObject(agentList);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    AMSAgentDescription[] agents = null;
+                    AID nextAgent = new AID(Integer.toString((node.getNextID())), AID.ISGUID);
+                    nextAgent.addAddresses("http://" + nextIP + ":8083/acc");
+                    send(msg);
+                }
+                block();
+            }
+        });
+
+        addBehaviour(new CyclicBehaviour() {
+            @Override
+            public void action() {
+                ACLMessage msg = myAgent.receive();
+                if(msg != null){
+                    if(msg.getPerformative()== ACLMessage.REQUEST)
+                    {
+                        String content = msg.getContent();
+                        if ((content != null))
+                        {
+                            System.out.println("Received Request from " + msg.getSender().getLocalName());
+                            System.out.println("Received Message : " + content);
+                        }
+                        else
+                        {
+                            block();
+                        }
+                    }
+                }
+                else
+                {
+                    block();
                 }
             }
         });

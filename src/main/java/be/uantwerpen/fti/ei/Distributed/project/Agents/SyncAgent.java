@@ -77,8 +77,9 @@ public class SyncAgent extends Agent {
                     msg.setContent("Test");
                     AID nextAgent = new AID(Integer.toString((node.getNextID())), AID.ISGUID);
                     nextAgent.addAddresses("http://" + nextIP + ":8083/acc");
-                    System.out.println(msg.getAllReceiver() + " ---- " + msg.getAllIntendedReceiver());
+                    msg.addReceiver(nextAgent);
                     send(msg);
+                    System.out.println("\nMessage to " + nextAgent);
                 }
             }
         });

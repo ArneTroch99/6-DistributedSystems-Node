@@ -24,7 +24,7 @@ public class SyncAgent extends Agent {
     private File replicatedFolder = new File("Replication/ReplicatedData");
     private final Node node;
     private final int nodeID;
-    private int nextIP;
+    private String nextIP;
     private final HashMap<String, fileProperties> agentList;
     private final RestTemplate restTemplate;
 
@@ -44,6 +44,7 @@ public class SyncAgent extends Agent {
         }
         final String namingServerURL = "http://" + node.getNamingServerIp() + ":8081/nodeip?id=" + node.getNextID();
         ResponseEntity<String> nextNodeIP = restTemplate.getForEntity(namingServerURL, String.class);
+        nextIP = nextNodeIP.getBody();
         System.out.println(nextNodeIP.getBody());
         addBehaviour(new CyclicBehaviour(this) {
             @Override

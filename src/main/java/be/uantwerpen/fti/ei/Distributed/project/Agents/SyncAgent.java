@@ -87,6 +87,7 @@ public class SyncAgent extends Agent {
             @Override
             public void action() {
                 ACLMessage msg = myAgent.receive();
+                System.out.println("Ghelllo");
                 if(msg != null){
                     System.out.println("message received");
                     if(msg.getPerformative()== ACLMessage.REQUEST)

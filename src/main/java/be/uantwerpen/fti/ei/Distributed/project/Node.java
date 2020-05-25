@@ -1,5 +1,6 @@
 package be.uantwerpen.fti.ei.Distributed.project;
 
+import be.uantwerpen.fti.ei.Distributed.project.Agents.SyncAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class Node {
@@ -20,6 +23,8 @@ public class Node {
     private int nextID = 0;
     private int previousID = 0;
     private String namingServerIp = "";
+    private Map<String, fileProperties> fileList = new HashMap<>();
+
 
     @PostConstruct
     public void initialize() {

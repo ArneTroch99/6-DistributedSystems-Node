@@ -84,7 +84,6 @@ public class SyncAgent extends Agent {
                     System.out.println(msg.getAllReceiver());
                     send(msg);
                 }
-                block();
             }
         });
 

@@ -31,12 +31,14 @@ public class ReplicationHTTPSender {
         this.files = files;
     }
 
-    void replicateFile(final File file, String nameServerIP) {
+    void replicateFile(final File file, String nameServerIP, boolean localFile) {
         logger.info("Asking for location to put file " + file.getName());
         final String namingServerURL = "http://" + nameServerIP + ":8081/fileLocation?filename=" + file.getName();
         ResponseEntity<String> nodeIP = restTemplate.getForEntity(namingServerURL, String.class);
         logger.info("Location for file " + file.getName() + " received, sending file");
-        files.addToLocalReplicated((file.getName()));
+        if (localFile) {
+            files.addToLocalReplicated((file.getName()));
+        }
         sendFile(file, nodeIP.getBody());
     }
 

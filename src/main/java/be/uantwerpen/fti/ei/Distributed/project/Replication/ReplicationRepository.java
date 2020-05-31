@@ -35,7 +35,7 @@ public class ReplicationRepository {
 
     public void refreshFiles() {
         for (final File fileEntry : files.getReplicatedFolder().listFiles()) {
-            this.sender.replicateFile(fileEntry, node.getNamingServerIp());
+            this.sender.replicateFile(fileEntry, node.getNamingServerIp(), false);
         }
     }
 
@@ -94,7 +94,7 @@ public class ReplicationRepository {
                     temp.add(fileEntry.getName());
                     if (!files.getLocalReplicated().contains(fileEntry.getName())) {
                         logger.info("Found new file, replicating...");
-                        sender.replicateFile(fileEntry, node.getNamingServerIp());
+                        sender.replicateFile(fileEntry, node.getNamingServerIp(), true);
                         logger.info("Replication of new file was succesfull!");
                     }
                 }

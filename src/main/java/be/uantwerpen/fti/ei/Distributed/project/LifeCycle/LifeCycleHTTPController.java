@@ -116,8 +116,6 @@ public class LifeCycleHTTPController {
         }
     }
 
-    @RequestMapping()
-
     private void failure(){
         try {
             logger.info("Attempting graceful shutdown");

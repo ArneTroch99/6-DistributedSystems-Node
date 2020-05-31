@@ -19,7 +19,7 @@ public class LifeCycleHTTPSender {
     void postIP(String destinationIP, String localIP){
         try {
             logger.info("Sending postIP PUT request to " + destinationIP);
-            String url = "http://" + destinationIP + ":8081/postIP?ip=" + localIP;
+            String url = "http://" + destinationIP + ":8082/postIP?ip=" + localIP;
             restTemplate.put(url, String.class);
             logger.info("postIP PUT request was sent successfully to " + destinationIP + "!");
         } catch (Exception e){
@@ -45,7 +45,7 @@ public class LifeCycleHTTPSender {
     void updateNeighbor(String destinationIP, String what, int newID) {
         try {
             logger.info("Sending updateNeighbour message to " + destinationIP);
-            String url = "http://" + destinationIP + ":8081/updateNeighbors?what=" + what + "&id=" + newID;
+            String url = "http://" + destinationIP + ":8082/updateNeighbors?what=" + what + "&id=" + newID;
             restTemplate.put(url, String.class);
             logger.info("updateNeighbour message was successfully sent to " + destinationIP + "!");
         } catch (Exception e) {

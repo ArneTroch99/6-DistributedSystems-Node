@@ -33,7 +33,7 @@ public class ReplicationHTTPSender {
 
     void replicateFile(final File file, String nameServerIP) {
         logger.info("Asking for location to put file " + file.getName());
-        final String namingServerURL = "http://" + nameServerIP + ":8081/fileLocation?filename=" + file.getName();
+        final String namingServerURL = "http://" + nameServerIP + ":8082/fileLocation?filename=" + file.getName();
         ResponseEntity<String> nodeIP = restTemplate.getForEntity(namingServerURL, String.class);
         logger.info("Location for file " + file.getName() + " received, sending file");
         files.addToLocalReplicated((file.getName()));
@@ -57,7 +57,7 @@ public class ReplicationHTTPSender {
         if (nodeIP.getBody().equals(node.getLocalIP())) {
             logger.info("Location is this node!");
         } else {
-            final String nodeURL = "http://" + nodeIP.getBody() + ":8081/deleteReplicatedFile?fileName=" + filename;
+            final String nodeURL = "http://" + nodeIP.getBody() + ":8082/deleteReplicatedFile?fileName=" + filename;
             restTemplate.put(nodeURL, String.class);
             logger.info("Request to delete file was sent successfully!");
         }
@@ -68,14 +68,14 @@ public class ReplicationHTTPSender {
         final String namingServerURL = "http://" + nameServerIP + ":8081/nodeip?id=" + ID;
         ResponseEntity<String> nodeIP = restTemplate.getForEntity(namingServerURL, String.class);
         logger.info("Location for file " + filename + " received, deleting file");
-        final String nodeURL = "http://" + nodeIP.getBody() + ":8081/deleteReplicatedFile?fileName=" + filename;
+        final String nodeURL = "http://" + nodeIP.getBody() + ":8082/deleteReplicatedFile?fileName=" + filename;
         restTemplate.put(nodeURL, String.class);
         logger.info("Request to delete file was sent successfully!");
     }
 
     void sendFile(File file, String nodeIP) {
         if (!nodeIP.equals(node.getLocalIP())) {
-            String nodeURL = "http://" + nodeIP + ":8081/addReplicatedFile";
+            String nodeURL = "http://" + nodeIP + ":8082/addReplicatedFile";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
             MultiValueMap<String, String> fileMap = new LinkedMultiValueMap<>();

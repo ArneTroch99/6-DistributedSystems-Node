@@ -33,7 +33,7 @@ public class ReplicationHTTPSender {
 
     void replicateFile(final File file, String nameServerIP) {
         logger.info("Asking for location to put file " + file.getName());
-        final String namingServerURL = "http://" + nameServerIP + ":8082/fileLocation?filename=" + file.getName();
+        final String namingServerURL = "http://" + nameServerIP + ":8081/fileLocation?filename=" + file.getName();
         ResponseEntity<String> nodeIP = restTemplate.getForEntity(namingServerURL, String.class);
         logger.info("Location for file " + file.getName() + " received, sending file");
         files.addToLocalReplicated((file.getName()));
